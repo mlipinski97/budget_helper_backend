@@ -3,6 +3,7 @@ package pl.lipinski.engineerdegree.dao.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -25,6 +26,10 @@ public class User {
 
     @Column(nullable = false)
     private String roles;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "expenseOwner")
+    private Set<Expense> expenses;
 
     public User() {
     }
@@ -75,5 +80,13 @@ public class User {
 
     public void setRoles(String roles) {
         this.roles = roles;
+    }
+
+    public Set<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(Set<Expense> expenses) {
+        this.expenses = expenses;
     }
 }

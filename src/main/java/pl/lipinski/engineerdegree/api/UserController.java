@@ -68,7 +68,7 @@ public class UserController {
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         User admin = modelMapper.map(userRegistrationDto, User.class);
-        userManager.saveUser(admin);
+        userManager.saveAdmin(admin);
         return ResponseEntity.ok(modelMapper.map(admin, UserDetailsDto.class));
     }
 
