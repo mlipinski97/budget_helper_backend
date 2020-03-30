@@ -7,13 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.lipinski.engineerdegree.dao.dto.ExpenseDto;
+import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.Expense;
+import pl.lipinski.engineerdegree.manager.BudgetListManager;
 import pl.lipinski.engineerdegree.manager.ExpenseManager;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.ExpenseValidator;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -23,12 +24,14 @@ public class ExpenseContoller {
     private ExpenseManager expenseManager;
     private ModelMapper modelMapper;
     private ExpenseValidator expenseValidator;
+    private BudgetListManager budgetListManager;
 
     @Autowired
-    public ExpenseContoller(ExpenseManager expenseManager, ExpenseValidator expenseValidator) {
+    public ExpenseContoller(ExpenseManager expenseManager, ExpenseValidator expenseValidator, BudgetListManager budgetListManage) {
         this.expenseManager = expenseManager;
         this.modelMapper = new ModelMapper();
         this.expenseValidator = expenseValidator;
+        this.budgetListManager = budgetListManage;
     }
 
     @GetMapping("/getall")
@@ -42,8 +45,12 @@ public class ExpenseContoller {
     }
 
     @PostMapping("/add")
-    public ResponseEntity save(@ModelAttribute("expenseform")ExpenseDto expenseDto,
+    public ResponseEntity save(@RequestParam Long budgetListId,
+                               @ModelAttribute("expenseform")ExpenseDto expenseDto,
                                BindingResult bindingResult) {
+        Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
+        budgetList.orElseThrow(EntityNotFoundException::new);
+        expenseDto.setBudgetList(budgetList.get());
         expenseValidator.validate(expenseDto, bindingResult);
         if(bindingResult.hasErrors()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,

@@ -1,27 +1,29 @@
 package pl.lipinski.engineerdegree.manager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
-import pl.lipinski.engineerdegree.dao.entity.Expense;
 import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.dao.repository.BudgetListRepo;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class BudgetListManager {
 
-    BudgetListRepo budgetListRepo;
+    private BudgetListRepo budgetListRepo;
     private UserManager userManager;
+    private UserBudgetListIntersectionManager intersectionManager;
 
     @Autowired
-    public BudgetListManager(BudgetListRepo budgetListRepo, UserManager userManager) {
+    public BudgetListManager(BudgetListRepo budgetListRepo, UserManager userManager, UserBudgetListIntersectionManager intersectionManager) {
         this.budgetListRepo = budgetListRepo;
         this.userManager = userManager;
+        this.intersectionManager = intersectionManager;
     }
 
     public Iterable<BudgetList> findAll(){
@@ -32,7 +34,7 @@ public class BudgetListManager {
         return budgetListRepo.findById(id);
     }
 
-    public Optional<BudgetList> findByName(String name){
+    public Iterable<BudgetList> findByName(String name){
         return budgetListRepo.findByName(name);
     }
 
@@ -43,9 +45,8 @@ public class BudgetListManager {
     public void addBudgetList(BudgetList budgetList){
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userManager.findByUsername(name);
-        user.orElseThrow(NoSuchElementException::new);
-        budgetList.addUser(user.get());
+        user.orElseThrow(EntityNotFoundException::new);
         budgetListRepo.save(budgetList);
+        intersectionManager.save(user.get(), budgetList);
     }
-
 }

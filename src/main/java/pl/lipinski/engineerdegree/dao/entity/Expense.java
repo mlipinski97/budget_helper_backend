@@ -29,6 +29,7 @@ public class Expense {
     private User expenseOwner;
 
     @ManyToOne
+    @NotNull
     private BudgetList budgetList;
 
     private Boolean isDone = false;

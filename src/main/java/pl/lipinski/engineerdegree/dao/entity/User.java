@@ -32,8 +32,8 @@ public class User {
     private Set<Expense> expenses;
 
     @JsonIgnore
-    @ManyToMany
-    private Set<BudgetList> budgetLists;
+    @OneToMany(mappedBy = "intersectionUser")
+    private Set<UserBudgetListIntersection> intersections;
 
     public User() {
     }
@@ -94,11 +94,11 @@ public class User {
         this.expenses = expenses;
     }
 
-    public Set<BudgetList> getBudgetLists() {
-        return budgetLists;
+    public Set<UserBudgetListIntersection> getIntersections() {
+        return intersections;
     }
 
-    public void setBudgetLists(Set<BudgetList> budgetLists) {
-        this.budgetLists = budgetLists;
+    public void setIntersections(Set<UserBudgetListIntersection> intersection) {
+        this.intersections = intersection;
     }
 }

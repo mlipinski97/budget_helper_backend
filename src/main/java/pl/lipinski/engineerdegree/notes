@@ -4,4 +4,18 @@ usuniecie uzytkownika z istniejacej listy
 dodanie wydatku z listy
 usuniecie wydatku z listy
 
-modyfikacja wydatku tak ogolem
+many to many nie istnieje wiec trzeba zrobić intersekcje
+
+USER
+
+vvvv
+
+user ----------- lista
+
+                 ^^^^^
+
+                 LISTA
+
+napisanie odpowiednich requestow typu:
+
+select * from intersekcja where user = wybrany_user

@@ -23,8 +23,8 @@ public class BudgetList {
     private Set<Expense> expenses;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "budgetLists")
-    private Set<User> users;
+    @OneToMany(mappedBy = "intersectionBudgetList")
+    private Set<UserBudgetListIntersection> intersections;
 
     public BudgetList() {
     }
@@ -53,27 +53,19 @@ public class BudgetList {
         this.expenses = expenses;
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public void addUser(User user){
-        users.add(user);
-    }
-
-    public void deleteUser(User user){
-        users.remove(user);
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<UserBudgetListIntersection> getIntersections() {
+        return intersections;
+    }
+
+    public void setIntersections(Set<UserBudgetListIntersection> intersections) {
+        this.intersections = intersections;
     }
 }
