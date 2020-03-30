@@ -28,6 +28,11 @@ public class Expense {
     @NotNull
     private User expenseOwner;
 
+    @ManyToOne
+    private BudgetList budgetList;
+
+    private Boolean isDone = false;
+
     public Expense() {
     }
 
@@ -69,5 +74,21 @@ public class Expense {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public BudgetList getBudgetList() {
+        return budgetList;
+    }
+
+    public void setBudgetList(BudgetList budgetList) {
+        this.budgetList = budgetList;
+    }
+
+    public Boolean getDone() {
+        return isDone;
+    }
+
+    public void setDone(Boolean done) {
+        isDone = done;
     }
 }

@@ -31,17 +31,19 @@ public class ExpenseManager {
         return expenseRepo.findById(id);
     }
 
-    public void deleteByID(Long id){
+    public void deletebyId(Long id){
         expenseRepo.deleteById(id);
     }
 
-    public ResponseEntity addExpense(Expense expense){
+    public Expense addExpense(Expense expense){
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userManager.findByUsername(name);
         user.orElseThrow(NoSuchElementException::new);
         expense.setExpenseOwner(user.get());
-        expenseRepo.save(expense);
-        return ResponseEntity.ok(expense);
+        if(expense.getDone() == null){
+            expense.setDone(false);
+        }
+        return expenseRepo.save(expense);
     }
 
 

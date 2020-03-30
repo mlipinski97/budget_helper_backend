@@ -14,6 +14,7 @@ public class ExpenseDto {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateOfExpense;
     private User expenseOwner;
+    private Boolean isDone;
 
     public LocalDate getDateOfExpense() {
         return dateOfExpense;

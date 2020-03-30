@@ -31,6 +31,10 @@ public class User {
     @OneToMany(mappedBy = "expenseOwner")
     private Set<Expense> expenses;
 
+    @JsonIgnore
+    @ManyToMany
+    private Set<BudgetList> budgetLists;
+
     public User() {
     }
 
@@ -88,5 +92,13 @@ public class User {
 
     public void setExpenses(Set<Expense> expenses) {
         this.expenses = expenses;
+    }
+
+    public Set<BudgetList> getBudgetLists() {
+        return budgetLists;
+    }
+
+    public void setBudgetLists(Set<BudgetList> budgetLists) {
+        this.budgetLists = budgetLists;
     }
 }

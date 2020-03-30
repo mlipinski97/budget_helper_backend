@@ -32,17 +32,17 @@ public class UserManager {
         return userRepo.findAll();
     }
 
-    public User saveUser(User user){
+    public void saveUser(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles("ROLE_USER");
         user.setEnabled(true);
-        return userRepo.save(user);
+        userRepo.save(user);
     }
 
-    public User saveAdmin(User user){
+    public void saveAdmin(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles("ROLE_ADMIN");
         user.setEnabled(true);
-        return userRepo.save(user);
+        userRepo.save(user);
     }
 }
