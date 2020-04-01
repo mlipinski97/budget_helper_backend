@@ -11,3 +11,4 @@ public class EngineerdegreeApplication {
     }
 
 }
+//TODO: add error list enum with codes and messages

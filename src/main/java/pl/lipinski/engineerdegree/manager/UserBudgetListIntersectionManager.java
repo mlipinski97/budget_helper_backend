@@ -31,10 +31,14 @@ public class UserBudgetListIntersectionManager {
         return userBudgetListIntersectionRepo.findAllByIntersectionUserAndAndIntersectionBudgetList(user, budgetList);
     }
 
-    public void save(User user, BudgetList budgetList){
+    public Optional<UserBudgetListIntersection> findByIntersectionUserAndAndIntersectionBudgetList(User user, BudgetList budgetList){
+        return userBudgetListIntersectionRepo.findByIntersectionUserAndIntersectionBudgetList(user, budgetList);
+    }
+
+    public UserBudgetListIntersection save(User user, BudgetList budgetList){
         UserBudgetListIntersection userBudgetListIntersection = new UserBudgetListIntersection();
         userBudgetListIntersection.setIntersectionBudgetList(budgetList);
         userBudgetListIntersection.setIntersectionUser(user);
-        userBudgetListIntersectionRepo.save(userBudgetListIntersection);
+        return userBudgetListIntersectionRepo.save(userBudgetListIntersection);
     }
 }

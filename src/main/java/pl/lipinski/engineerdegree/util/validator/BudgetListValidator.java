@@ -13,6 +13,11 @@ import java.util.List;
 @Component
 public class BudgetListValidator implements Validator {
 
+    private final Integer EMPTY_VALUE_ERROR_CODE = 500;
+    private final Integer WRONG_BUDGET_VALUE_ERROR_CODE = 505;
+    private final String WRONG_BUDGET_VALUE_ERROR_MESSAGE = "Budget value can not be negative value or zero!";
+
+
     private int errorCode;
     private ModelMapper modelMapper;
 
@@ -33,15 +38,15 @@ public class BudgetListValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "budgetValue", "budgetValue is empty!");
 
         if (errors.hasErrors()) {
-            errorCode = 500;
+            errorCode = EMPTY_VALUE_ERROR_CODE;
             return;
         }
 
         BudgetList budgetList = modelMapper.map(o, BudgetList.class);
 
         if(budgetList.getBudgetValue() <= 0){
-            errorCode = 505;
-            errors.rejectValue("BudgetValue","Budget value can not be negative value!");
+            errorCode = WRONG_BUDGET_VALUE_ERROR_CODE;
+            errors.rejectValue("BudgetValue",WRONG_BUDGET_VALUE_ERROR_MESSAGE);
         }
     }
 

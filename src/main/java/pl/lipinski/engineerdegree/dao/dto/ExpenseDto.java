@@ -10,10 +10,12 @@ import java.time.LocalDate;
 @Data
 public class ExpenseDto {
 
+    //form data
     private String name;
     private Double amount;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateOfExpense;
+
     private User expenseOwner;
     private BudgetList budgetList;
 

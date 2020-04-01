@@ -13,6 +13,10 @@ import java.util.List;
 @Component
 public class ExpenseValidator implements Validator {
 
+    private final Integer EMPTY_VALUE_ERROR_CODE = 500;
+    private final Integer WRONG_EXPENSE_VALUE_ERROR_CODE = 504;
+    private final String WRONG_EXPENSE_VALUE_ERROR_MESSAGE = "Expense amount can not be negative value or zero!";
+
     private int errorCode;
     private ModelMapper modelMapper;
 
@@ -34,15 +38,15 @@ public class ExpenseValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dateOfExpense", "dateOfExpense is empty!");
 
         if (errors.hasErrors()) {
-            errorCode = 500;
+            errorCode = EMPTY_VALUE_ERROR_CODE;
             return;
         }
 
         Expense expense = modelMapper.map(o, Expense.class);
 
         if(expense.getAmount() <= 0){
-            errorCode = 504;
-            errors.rejectValue("amount","Expense amount can not be negative value!");
+            errorCode = WRONG_EXPENSE_VALUE_ERROR_CODE;
+            errors.rejectValue("amount", WRONG_EXPENSE_VALUE_ERROR_MESSAGE);
         }
     }
 

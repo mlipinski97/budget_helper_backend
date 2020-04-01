@@ -15,11 +15,17 @@ import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.ExpenseValidator;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/expenses")
 public class ExpenseContoller {
+
+    private final Integer BUDGET_LIST_NOT_FOUND_ERROR_CODE = 509;
+    private final Integer EXPENSE_NOT_FOUND_ERROR_CODE = 510;
+    private final String EXPENSE_NOT_FOUND_ERROR_MESSAGE = "Expense not found!";
+    private final String BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE = "Budget list not found!";
 
     private ExpenseManager expenseManager;
     private ModelMapper modelMapper;
@@ -49,7 +55,12 @@ public class ExpenseContoller {
                                @ModelAttribute("expenseform")ExpenseDto expenseDto,
                                BindingResult bindingResult) {
         Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
-        budgetList.orElseThrow(EntityNotFoundException::new);
+        if(!budgetList.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    BUDGET_LIST_NOT_FOUND_ERROR_CODE,
+                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
         expenseDto.setBudgetList(budgetList.get());
         expenseValidator.validate(expenseDto, bindingResult);
         if(bindingResult.hasErrors()){
@@ -66,7 +77,12 @@ public class ExpenseContoller {
     @PatchMapping("/complete")
     public ResponseEntity changeToDone(@RequestParam Long id){
         Optional<Expense> expense = expenseManager.findById(id);
-        expense.orElseThrow(EntityNotFoundException::new);
+        if(!expense.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    EXPENSE_NOT_FOUND_ERROR_CODE,
+                    Arrays.asList(EXPENSE_NOT_FOUND_ERROR_MESSAGE));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
         expense.get().setDone(true);
         Expense updatedExpense = expenseManager.addExpense(expense.get());
         return ResponseEntity.ok(updatedExpense);
@@ -75,7 +91,12 @@ public class ExpenseContoller {
     @PatchMapping("/undocomplete")
     public ResponseEntity changeToUndone(@RequestParam Long id){
         Optional<Expense> expense = expenseManager.findById(id);
-        expense.orElseThrow(EntityNotFoundException::new);
+        if(!expense.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    EXPENSE_NOT_FOUND_ERROR_CODE,
+                    Arrays.asList(EXPENSE_NOT_FOUND_ERROR_MESSAGE));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
         expense.get().setDone(false);
         Expense updatedExpense = expenseManager.addExpense(expense.get());
         return ResponseEntity.ok(updatedExpense);
@@ -86,7 +107,12 @@ public class ExpenseContoller {
                                @ModelAttribute("expenseform")ExpenseDto expenseDto,
                                BindingResult bindingResult) {
         Optional<Expense> expenseToUpdate = expenseManager.findById(id);
-        expenseToUpdate.orElseThrow(EntityNotFoundException::new);
+        if(!expenseToUpdate.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    EXPENSE_NOT_FOUND_ERROR_CODE,
+                    Arrays.asList(EXPENSE_NOT_FOUND_ERROR_MESSAGE));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
         expenseValidator.validate(expenseDto, bindingResult);
         if(bindingResult.hasErrors()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,

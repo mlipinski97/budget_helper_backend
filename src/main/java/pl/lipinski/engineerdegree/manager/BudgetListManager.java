@@ -49,4 +49,8 @@ public class BudgetListManager {
         budgetListRepo.save(budgetList);
         intersectionManager.save(user.get(), budgetList);
     }
+    public void editBudgetList(BudgetList budgetList){
+        budgetListRepo.save(budgetList);
+
+    }
 }
