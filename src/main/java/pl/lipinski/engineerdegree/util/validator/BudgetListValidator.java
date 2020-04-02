@@ -5,18 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.*;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
-import pl.lipinski.engineerdegree.dao.entity.Expense;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
+import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.*;
+
 @Component
 public class BudgetListValidator implements Validator {
-
-    private final Integer EMPTY_VALUE_ERROR_CODE = 500;
-    private final Integer WRONG_BUDGET_VALUE_ERROR_CODE = 505;
-    private final String WRONG_BUDGET_VALUE_ERROR_MESSAGE = "Budget value can not be negative value or zero!";
-
 
     private int errorCode;
     private ModelMapper modelMapper;
@@ -38,15 +35,15 @@ public class BudgetListValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "budgetValue", "budgetValue is empty!");
 
         if (errors.hasErrors()) {
-            errorCode = EMPTY_VALUE_ERROR_CODE;
+            errorCode = EMPTY_VALUE_ERROR_CODE.getValue();
             return;
         }
 
         BudgetList budgetList = modelMapper.map(o, BudgetList.class);
 
         if(budgetList.getBudgetValue() <= 0){
-            errorCode = WRONG_BUDGET_VALUE_ERROR_CODE;
-            errors.rejectValue("BudgetValue",WRONG_BUDGET_VALUE_ERROR_MESSAGE);
+            errorCode = WRONG_BUDGET_VALUE_ERROR_CODE.getValue();
+            errors.rejectValue("BudgetValue",WRONG_BUDGET_VALUE_ERROR_MESSAGE.getMessage());
         }
     }
 

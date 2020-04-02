@@ -14,25 +14,18 @@ import pl.lipinski.engineerdegree.manager.BudgetListManager;
 import pl.lipinski.engineerdegree.manager.UserBudgetListIntersectionManager;
 import pl.lipinski.engineerdegree.manager.UserManager;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
+
 import pl.lipinski.engineerdegree.util.validator.BudgetListValidator;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
+
+import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
+import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.*;
 
 @RestController
 @RequestMapping("/api/budgetlist")
 public class BudgetListController {
-
-    private final Integer INTERSECTION_ALREADY_EXISTS_ERROR_CODE = 507;
-    private final Integer USER_NOT_FOUND_ERROR_CODE = 508;
-    private final Integer BUDGET_LIST_NOT_FOUND_ERROR_CODE = 509;
-    private final Integer INTERSECTION_NOT_FOUND_ERROR_CODE = 510;
-    private final String INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE = "User already have permission for that budget list!";
-    private final String USER_NOT_FOUND_ERROR_MESSAGE = "User not found!";
-    private final String BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE = "Budget list not found!";
-    private final String INTERSECTION_NOT_FOUND_ERROR_MESSAGE = "This user does not have permission for that list, no permission to revoke!";
 
     private BudgetListManager budgetListManager;
     private UserManager userManager;
@@ -96,8 +89,8 @@ public class BudgetListController {
         Optional<BudgetList> budgetListToUpdate = budgetListManager.findById(id);
         if(!budgetListToUpdate.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    BUDGET_LIST_NOT_FOUND_ERROR_CODE,
-                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE));
+                    BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
+                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         budgetListValidator.validate(budgetListDto, bindingResult);
@@ -119,16 +112,16 @@ public class BudgetListController {
         Optional<User> user = userManager.findByUsername(username);
         if(!user.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    USER_NOT_FOUND_ERROR_CODE,
-                    Arrays.asList(USER_NOT_FOUND_ERROR_MESSAGE));
+                    USER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Arrays.asList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
 
         if(!budgetList.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    BUDGET_LIST_NOT_FOUND_ERROR_CODE,
-                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE));
+                    BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
+                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
 
@@ -136,8 +129,8 @@ public class BudgetListController {
                 findByIntersectionUserAndAndIntersectionBudgetList(user.get(), budgetList.get());
         if(intersection.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    INTERSECTION_ALREADY_EXISTS_ERROR_CODE,
-                    Arrays.asList(INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE));
+                    INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
+                    Arrays.asList(INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         UserBudgetListIntersection intersectionToReturn = userBudgetListIntersectionManager.save(user.get(), budgetList.get());
@@ -149,16 +142,16 @@ public class BudgetListController {
         Optional<User> user = userManager.findByUsername(username);
         if(!user.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    USER_NOT_FOUND_ERROR_CODE,
-                    Arrays.asList(USER_NOT_FOUND_ERROR_MESSAGE));
+                    USER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Arrays.asList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
 
         Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
         if(!budgetList.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    BUDGET_LIST_NOT_FOUND_ERROR_CODE,
-                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE));
+                    BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
+                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
 
@@ -166,8 +159,8 @@ public class BudgetListController {
                 findByIntersectionUserAndAndIntersectionBudgetList(user.get(), budgetList.get());
         if(!budgetList.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    INTERSECTION_NOT_FOUND_ERROR_CODE,
-                    Arrays.asList(INTERSECTION_NOT_FOUND_ERROR_MESSAGE));
+                    INTERSECTION_NOT_FOUND_ERROR_CODE.getValue(),
+                    Arrays.asList(INTERSECTION_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         userBudgetListIntersectionManager.deleteById(intersection.get().getId());

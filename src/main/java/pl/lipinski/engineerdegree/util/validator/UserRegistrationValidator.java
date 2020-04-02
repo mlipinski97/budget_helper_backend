@@ -10,16 +10,11 @@ import pl.lipinski.engineerdegree.manager.UserManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
+import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.*;
 
 @Component
 public class UserRegistrationValidator implements Validator {
-
-    private final Integer EMPTY_VALUE_ERROR_CODE = 500;
-    private final Integer PASSWORDS_DOESNT_MATCH_ERROR_CODE = 501;
-    private final Integer USERNAME_TAKEN_ERROR_CODE = 502;
-    private final String PASSWORDS_DOESNT_MATCH_ERROR_MESSAGE = "passowords does not match!";
-    private final String USERNAME_TAKEN_ERROR_MESSAGE = "This username is already registered!";
-
 
     private int errorCode;
     private final UserManager userManager;
@@ -45,20 +40,20 @@ public class UserRegistrationValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirmation", "passwordConfirmation is empty");
 
         if (errors.hasErrors()) {
-            errorCode = EMPTY_VALUE_ERROR_CODE;
+            errorCode = EMPTY_VALUE_ERROR_CODE.getValue();
             return;
         }
 
         User user = modelMapper.map(o, User.class);
 
         if (!user.getPassword().equals(user.getPasswordConfirmation())) {
-            errorCode = PASSWORDS_DOESNT_MATCH_ERROR_CODE;
-            errors.rejectValue("password", PASSWORDS_DOESNT_MATCH_ERROR_MESSAGE);
+            errorCode = PASSWORDS_DOESNT_MATCH_ERROR_CODE.getValue();
+            errors.rejectValue("password", PASSWORDS_DOESNT_MATCH_ERROR_MESSAGE.getMessage());
             return;
         }
         if (userManager.findByUsername(user.getUsername()).isPresent()) {
-            errorCode = USERNAME_TAKEN_ERROR_CODE;
-            errors.rejectValue("username", USERNAME_TAKEN_ERROR_MESSAGE);
+            errorCode = USERNAME_TAKEN_ERROR_CODE.getValue();
+            errors.rejectValue("username", USERNAME_TAKEN_ERROR_MESSAGE.getMessage());
             return;
         }
     }

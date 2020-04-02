@@ -5,17 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.*;
 import pl.lipinski.engineerdegree.dao.entity.Expense;
-import pl.lipinski.engineerdegree.manager.UserManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
+import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.*;
+
 @Component
 public class ExpenseValidator implements Validator {
-
-    private final Integer EMPTY_VALUE_ERROR_CODE = 500;
-    private final Integer WRONG_EXPENSE_VALUE_ERROR_CODE = 504;
-    private final String WRONG_EXPENSE_VALUE_ERROR_MESSAGE = "Expense amount can not be negative value or zero!";
 
     private int errorCode;
     private ModelMapper modelMapper;
@@ -38,15 +36,15 @@ public class ExpenseValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dateOfExpense", "dateOfExpense is empty!");
 
         if (errors.hasErrors()) {
-            errorCode = EMPTY_VALUE_ERROR_CODE;
+            errorCode = EMPTY_VALUE_ERROR_CODE.getValue();
             return;
         }
 
         Expense expense = modelMapper.map(o, Expense.class);
 
         if(expense.getAmount() <= 0){
-            errorCode = WRONG_EXPENSE_VALUE_ERROR_CODE;
-            errors.rejectValue("amount", WRONG_EXPENSE_VALUE_ERROR_MESSAGE);
+            errorCode = WRONG_EXPENSE_VALUE_ERROR_CODE.getValue();
+            errors.rejectValue("amount", WRONG_EXPENSE_VALUE_ERROR_MESSAGE.getMessage());
         }
     }
 

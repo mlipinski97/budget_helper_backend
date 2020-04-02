@@ -21,10 +21,6 @@ import java.util.Optional;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final Integer USER_NOT_FOUND_ERROR_CODE = 508;
-    private final String USER_NOT_FOUND_ERROR_MESSAGE = "User not found!";
-
-
 
     private UserManager userManager;
     private ModelMapper modelMapper;
