@@ -1,6 +1,8 @@
 package pl.lipinski.engineerdegree.manager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lipinski.engineerdegree.dao.entity.User;
@@ -44,5 +46,10 @@ public class UserManager {
         user.setRoles("ROLE_ADMIN");
         user.setEnabled(true);
         userRepo.save(user);
+    }
+    @EventListener(ApplicationReadyEvent.class)
+    public void dbFiller() {
+        userRepo.save(new User("admin", passwordEncoder.encode("admin"), true, "ROLE_ADMIN"));
+        userRepo.save(new User("user", passwordEncoder.encode("user"), true, "ROLE_USER"));
     }
 }
