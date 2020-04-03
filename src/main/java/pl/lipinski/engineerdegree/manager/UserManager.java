@@ -47,5 +47,9 @@ public class UserManager {
         user.setEnabled(true);
         userRepo.save(user);
     }
-
+    @EventListener(ApplicationReadyEvent.class)
+    public void dbFiller() {
+        userRepo.save(new User("admin", passwordEncoder.encode("admin"), true, "ROLE_ADMIN"));
+        userRepo.save(new User("user", passwordEncoder.encode("user"), true, "ROLE_USER"));
+    }
 }
