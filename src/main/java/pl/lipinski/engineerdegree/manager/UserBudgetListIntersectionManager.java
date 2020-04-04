@@ -31,7 +31,7 @@ public class UserBudgetListIntersectionManager {
         return userBudgetListIntersectionRepo.findAllByIntersectionUserAndAndIntersectionBudgetList(user, budgetList);
     }
 
-    public Optional<UserBudgetListIntersection> findByIntersectionUserAndAndIntersectionBudgetList(User user, BudgetList budgetList){
+    public Optional<UserBudgetListIntersection> findByIntersectionUserAndIntersectionBudgetList(User user, BudgetList budgetList){
         return userBudgetListIntersectionRepo.findByIntersectionUserAndIntersectionBudgetList(user, budgetList);
     }
 

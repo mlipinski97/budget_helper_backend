@@ -4,13 +4,17 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.lipinski.engineerdegree.dao.dto.ExpenseDto;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.Expense;
+import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.manager.BudgetListManager;
 import pl.lipinski.engineerdegree.manager.ExpenseManager;
+import pl.lipinski.engineerdegree.manager.UserBudgetListIntersectionManager;
+import pl.lipinski.engineerdegree.manager.UserManager;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.ExpenseValidator;
 
@@ -29,13 +33,21 @@ public class ExpenseContoller {
     private ModelMapper modelMapper;
     private ExpenseValidator expenseValidator;
     private BudgetListManager budgetListManager;
+    private UserManager userManager;
+    private UserBudgetListIntersectionManager intersectionManager;
 
     @Autowired
-    public ExpenseContoller(ExpenseManager expenseManager, ExpenseValidator expenseValidator, BudgetListManager budgetListManage) {
+    public ExpenseContoller(ExpenseManager expenseManager,
+                            ExpenseValidator expenseValidator,
+                            BudgetListManager budgetListManage,
+                            UserManager userManager,
+                            UserBudgetListIntersectionManager intersectionManager) {
         this.expenseManager = expenseManager;
         this.modelMapper = new ModelMapper();
         this.expenseValidator = expenseValidator;
         this.budgetListManager = budgetListManage;
+        this.userManager = userManager;
+        this.intersectionManager = intersectionManager;
     }
 
     @GetMapping("/getall")
@@ -44,8 +56,16 @@ public class ExpenseContoller {
     }
 
     @DeleteMapping("/deletebyid")
-    public void deleteById(@RequestParam Long id){
+    public ResponseEntity deleteById(@RequestParam Long id){
+        expenseManager.findById(id).orElseThrow(EntityNotFoundException::new);
+        if(!validatePermissions(expenseManager.findById(id).get())){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
         expenseManager.deletebyId(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/getallbybudgetlist")
@@ -75,6 +95,12 @@ public class ExpenseContoller {
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         Expense expense = modelMapper.map(expenseDto, Expense.class);
+        if(!validatePermissions(expense)){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
         expenseManager.addExpense(expense);
         return ResponseEntity.ok(modelMapper.map(expense, Expense.class));
     }
@@ -86,6 +112,12 @@ public class ExpenseContoller {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     EXPENSE_NOT_FOUND_ERROR_CODE.getValue(),
                     Arrays.asList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        if(!validatePermissions(expense.get())){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         expense.get().setDone(true);
@@ -100,6 +132,12 @@ public class ExpenseContoller {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     EXPENSE_NOT_FOUND_ERROR_CODE.getValue(),
                     Arrays.asList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        if(!validatePermissions(expense.get())){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         expense.get().setDone(false);
@@ -126,12 +164,28 @@ public class ExpenseContoller {
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         Expense expense = modelMapper.map(expenseDto, Expense.class);
+        if(!validatePermissions(expense)){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
         expenseToUpdate.get().setAmount(expense.getAmount());
         expenseToUpdate.get().setDateOfExpense(expense.getDateOfExpense());
         expenseToUpdate.get().setName(expense.getName());
 
         expenseManager.addExpense(expenseToUpdate.get());
         return ResponseEntity.ok(expenseToUpdate.get());
+    }
+
+    private boolean validatePermissions(Expense expense){
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userManager.findByUsername(name);
+        if(!user.isPresent()){
+            return false;
+        }
+        return intersectionManager.findByIntersectionUserAndIntersectionBudgetList(user.get(), expense.getBudgetList()).isPresent()
+                || user.get().getRoles().equals("ROLE_ADMIN");
     }
 
 }

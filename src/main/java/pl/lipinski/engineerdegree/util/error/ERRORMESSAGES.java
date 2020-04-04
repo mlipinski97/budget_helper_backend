@@ -10,7 +10,8 @@ public enum ERRORMESSAGES {
     BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE("Budget list not found!"),
     INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE("User already have permission for that budget list!"),
     USER_NOT_FOUND_ERROR_MESSAGE("User not found!"),
-    INTERSECTION_NOT_FOUND_ERROR_MESSAGE("This user does not have permission for that list, no permission to revoke!");
+    INTERSECTION_NOT_FOUND_ERROR_MESSAGE("This user does not have permission for that list, no permission to revoke!"),
+    USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE("This user dont have permission to access this entity!");
 
     private String message;
 
