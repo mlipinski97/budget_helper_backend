@@ -126,7 +126,7 @@ public class BudgetListController {
         }
 
         Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager.
-                findByIntersectionUserAndAndIntersectionBudgetList(user.get(), budgetList.get());
+                findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
         if(intersection.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
@@ -156,7 +156,7 @@ public class BudgetListController {
         }
 
         Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager.
-                findByIntersectionUserAndAndIntersectionBudgetList(user.get(), budgetList.get());
+                findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
         if(!budgetList.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     INTERSECTION_NOT_FOUND_ERROR_CODE.getValue(),
