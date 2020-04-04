@@ -20,8 +20,12 @@ import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.BudgetListValidator;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
 import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.*;
@@ -56,7 +60,16 @@ public class BudgetListController {
 
     @GetMapping("/getbyname")
     public Iterable<BudgetList> getByName(@RequestParam String name){
-        return budgetListManager.findByName(name);
+        List<BudgetList> result =
+                StreamSupport.stream(budgetListManager.findByName(name).spliterator(), false)
+                        .collect(Collectors.toList());
+        List<BudgetList> budgetListList = new ArrayList<>();
+        for (BudgetList bl : result){
+            if(validatePermissions(bl)){
+               budgetListList.add(bl);
+            }
+        }
+        return budgetListList;
     }
 
     @GetMapping("/getbyid")
