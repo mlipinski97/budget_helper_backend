@@ -39,8 +39,13 @@ public class UserController {
     }
 
     @GetMapping("/getbyusername")
-    public Optional<User> getByUsername(String username){
+    public Optional<User> getByUsername(@RequestParam String username){
         return userManager.findByUsername(username);
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteByUsername(@RequestParam String username){
+        userManager.deleteByUsername(username);
     }
 
     @PostMapping("/register")

@@ -52,17 +52,17 @@ public class BudgetListController {
     }
 
     @GetMapping("/getbyname")
-    public Iterable<BudgetList> getByName(String name){
+    public Iterable<BudgetList> getByName(@RequestParam String name){
         return budgetListManager.findByName(name);
     }
 
     @GetMapping("/getbyid")
-    public Optional<BudgetList> getById(Long id){
+    public Optional<BudgetList> getById(@RequestParam Long id){
         return budgetListManager.findById(id);
     }
 
     @DeleteMapping("/delete")
-    public void deleteById(Long id){
+    public void deleteById(@RequestParam Long id){
         budgetListManager.deleteById(id);
     }
 

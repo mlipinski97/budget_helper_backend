@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.Expense;
 import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.dao.repository.ExpenseRepo;
@@ -29,6 +30,10 @@ public class ExpenseManager {
 
     public Optional<Expense> findById(Long id){
         return expenseRepo.findById(id);
+    }
+
+    public Iterable<Expense> findAllByBudgetList(BudgetList budgetList){
+        return expenseRepo.findAllByBudgetList(budgetList);
     }
 
     public void deletebyId(Long id){

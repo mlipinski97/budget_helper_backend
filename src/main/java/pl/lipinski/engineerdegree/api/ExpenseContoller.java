@@ -14,6 +14,7 @@ import pl.lipinski.engineerdegree.manager.ExpenseManager;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.ExpenseValidator;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -43,8 +44,15 @@ public class ExpenseContoller {
     }
 
     @DeleteMapping("/deletebyid")
-    public void deleteById(Long id){
+    public void deleteById(@RequestParam Long id){
         expenseManager.deletebyId(id);
+    }
+
+    @GetMapping("/getallbybudgetlist")
+    public Iterable<Expense> getAllByBudgetListId(@RequestParam Long id){
+        Optional<BudgetList> budgetList = budgetListManager.findById(id);
+        budgetList.orElseThrow(EntityNotFoundException::new);
+        return expenseManager.findAllByBudgetList(budgetList.get());
     }
 
     @PostMapping("/add")
