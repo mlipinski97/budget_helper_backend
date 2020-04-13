@@ -27,8 +27,8 @@ public class UserBudgetListIntersectionManager {
         userBudgetListIntersectionRepo.deleteById(id);
     }
 
-    public Iterable<UserBudgetListIntersection> findAllByIntersectionUserAndAndIntersectionBudgetList(User user, BudgetList budgetList){
-        return userBudgetListIntersectionRepo.findAllByIntersectionUserAndAndIntersectionBudgetList(user, budgetList);
+    public Iterable<UserBudgetListIntersection> findAllByIntersectionUser(User user){
+        return userBudgetListIntersectionRepo.findAllByIntersectionUser(user);
     }
 
     public Optional<UserBudgetListIntersection> findByIntersectionUserAndIntersectionBudgetList(User user, BudgetList budgetList){

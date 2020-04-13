@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface BudgetListRepo extends JpaRepository<BudgetList, Long> {
     public Iterable<BudgetList> findByName(String name);
+    public Iterable<BudgetList> findAllByInte
 }

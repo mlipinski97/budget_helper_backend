@@ -71,6 +71,19 @@ public class BudgetListController {
         }
         return budgetListList;
     }
+    @GetMapping("/getallbyuser")
+    public Iterable<BudgetList> getAllByUser(@RequestParam String username){
+        List<BudgetList> result =
+                StreamSupport.stream(budgetListManager.findAllByUser(username).spliterator(), false)
+                        .collect(Collectors.toList());
+        List<BudgetList> budgetListList = new ArrayList<>();
+        for (BudgetList bl : result){
+            if(validatePermissions(bl)){
+                budgetListList.add(bl);
+            }
+        }
+        return budgetListList;
+    }
 
     @GetMapping("/getbyid")
     public ResponseEntity<Optional<BudgetList>> getById(@RequestParam Long id){

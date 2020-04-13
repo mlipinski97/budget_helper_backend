@@ -5,12 +5,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.User;
+import pl.lipinski.engineerdegree.dao.entity.UserBudgetListIntersection;
 import pl.lipinski.engineerdegree.dao.repository.BudgetListRepo;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class BudgetListManager {
@@ -38,6 +37,17 @@ public class BudgetListManager {
         return budgetListRepo.findByName(name);
     }
 
+    public Iterable<BudgetList> findAllByUser(String username){
+        Optional<User> user = userManager.findByUsername(username);
+        user.orElseThrow(EntityNotFoundException::new);
+        Iterable<UserBudgetListIntersection> intersections = intersectionManager.findAllByIntersectionUser(user.get());
+        List<BudgetList> budgetLists = new ArrayList<>();
+        for (UserBudgetListIntersection intersection : intersections ) {
+            budgetLists.add(intersection.getIntersectionBudgetList());
+        }
+        return budgetLists;
+    }
+
     public void deleteById(Long id){
         budgetListRepo.deleteById(id);
     }
@@ -51,6 +61,5 @@ public class BudgetListManager {
     }
     public void editBudgetList(BudgetList budgetList){
         budgetListRepo.save(budgetList);
-
     }
 }
