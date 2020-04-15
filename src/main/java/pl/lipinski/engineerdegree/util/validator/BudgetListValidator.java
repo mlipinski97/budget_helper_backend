@@ -55,7 +55,7 @@ public class BudgetListValidator implements Validator {
         List<String> errorList = new ArrayList<>();
         List<FieldError> fieldErrorList = bindingResult.getFieldErrors();
         for (FieldError fieldError : fieldErrorList) {
-            errorList.add(fieldError.getObjectName() + " with error code: " + fieldError.getCode());
+            errorList.add(fieldError.getCode());
         }
         return errorList;
     }
