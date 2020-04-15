@@ -6,4 +6,5 @@ import lombok.Data;
 public class BudgetListDto {
     private String name;
     private Double budgetValue;
+    private Double remainingValue;
 }

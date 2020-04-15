@@ -22,9 +22,9 @@ import java.util.Optional;
 public class UserController {
 
 
-    private UserManager userManager;
-    private ModelMapper modelMapper;
-    private UserRegistrationValidator userRegistrationValidator;
+    private final UserManager userManager;
+    private final ModelMapper modelMapper;
+    private final UserRegistrationValidator userRegistrationValidator;
 
     @Autowired
     public UserController(UserManager userManager,UserRegistrationValidator userRegistrationValidator) {

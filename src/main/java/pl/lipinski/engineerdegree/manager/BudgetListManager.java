@@ -14,12 +14,14 @@ import java.util.*;
 @Service
 public class BudgetListManager {
 
-    private BudgetListRepo budgetListRepo;
-    private UserManager userManager;
-    private UserBudgetListIntersectionManager intersectionManager;
+    private final BudgetListRepo budgetListRepo;
+    private final UserManager userManager;
+    private final UserBudgetListIntersectionManager intersectionManager;
 
     @Autowired
-    public BudgetListManager(BudgetListRepo budgetListRepo, UserManager userManager, UserBudgetListIntersectionManager intersectionManager) {
+    public BudgetListManager(BudgetListRepo budgetListRepo,
+                             UserManager userManager,
+                             UserBudgetListIntersectionManager intersectionManager) {
         this.budgetListRepo = budgetListRepo;
         this.userManager = userManager;
         this.intersectionManager = intersectionManager;
@@ -56,10 +58,13 @@ public class BudgetListManager {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userManager.findByUsername(name);
         user.orElseThrow(EntityNotFoundException::new);
+        budgetList.setRemainingValue(budgetList.getBudgetValue());
         budgetListRepo.save(budgetList);
         intersectionManager.save(user.get(), budgetList);
     }
     public void editBudgetList(BudgetList budgetList){
         budgetListRepo.save(budgetList);
     }
+
+
 }

@@ -18,6 +18,8 @@ public class BudgetList {
 
     private Double budgetValue;
 
+    private Double remainingValue;
+
     @JsonIgnore
     @OneToMany(mappedBy = "budgetList")
     private Set<Expense> expenses;
@@ -67,5 +69,13 @@ public class BudgetList {
 
     public void setIntersections(Set<UserBudgetListIntersection> intersections) {
         this.intersections = intersections;
+    }
+
+    public Double getRemainingValue() {
+        return remainingValue;
+    }
+
+    public void setRemainingValue(Double remainingValue) {
+        this.remainingValue = remainingValue;
     }
 }
