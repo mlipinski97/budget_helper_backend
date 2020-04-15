@@ -85,5 +85,4 @@ public class UserController {
         user.orElseThrow(NoSuchElementException::new);
         return modelMapper.map(user.get(), UserDetailsDto.class);
     }
-
 }
