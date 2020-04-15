@@ -61,11 +61,12 @@ public class ExpenseManager {
 
     public void updateBudgetListRemainingValue(BudgetList budgetList){
         Iterable<Expense> expenses = findAllByBudgetList(budgetList);
-        int expensesSummary = 0;
+        double expensesSummary = 0;
         for (Expense e : expenses) {
             expensesSummary += e.getAmount();
         }
-        budgetList.setRemainingValue(budgetList.getBudgetValue() - expensesSummary);
+        Double difference = budgetList.getBudgetValue() - expensesSummary;
+        budgetList.setRemainingValue(difference);
         budgetListManager.editBudgetList(budgetList);
     }
 }
