@@ -11,5 +11,5 @@ public class BudgetListDto {
     private Double budgetValue;
     private Double remainingValue;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private LocalDate dateOfExpense;
+    private LocalDate dueDate;
 }
