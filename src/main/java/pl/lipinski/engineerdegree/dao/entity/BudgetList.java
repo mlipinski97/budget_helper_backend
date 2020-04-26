@@ -1,8 +1,10 @@
 package pl.lipinski.engineerdegree.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -19,6 +21,9 @@ public class BudgetList {
     private Double budgetValue;
 
     private Double remainingValue;
+
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate dueDate;
 
     @JsonIgnore
     @OneToMany(mappedBy = "budgetList")
@@ -77,5 +82,14 @@ public class BudgetList {
 
     public void setRemainingValue(Double remainingValue) {
         this.remainingValue = remainingValue;
+    }
+
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dateOfExpense) {
+        this.dueDate = dateOfExpense;
     }
 }

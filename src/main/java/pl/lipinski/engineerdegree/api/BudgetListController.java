@@ -153,6 +153,7 @@ public class BudgetListController {
         BudgetList budgetList = modelMapper.map(budgetListDto, BudgetList.class);
         budgetListToUpdate.get().setBudgetValue(budgetList.getBudgetValue());
         budgetListToUpdate.get().setName(budgetList.getName());
+        budgetListToUpdate.get().setDueDate(budgetList.getDueDate());
         budgetListManager.editBudgetList(budgetListToUpdate.get());
         return ResponseEntity.ok(budgetListToUpdate.get());
     }
