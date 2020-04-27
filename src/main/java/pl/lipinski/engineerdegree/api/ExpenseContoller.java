@@ -68,6 +68,18 @@ public class ExpenseContoller {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity findById(@RequestParam Long id){
+        Expense expense = expenseManager.findById(id).orElseThrow(EntityNotFoundException::new);
+        if(!validatePermissions(expense)){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(expense);
+    }
+
     @GetMapping("/getallbybudgetlist")
     public Iterable<Expense> getAllByBudgetListId(@RequestParam Long id){
         Optional<BudgetList> budgetList = budgetListManager.findById(id);
