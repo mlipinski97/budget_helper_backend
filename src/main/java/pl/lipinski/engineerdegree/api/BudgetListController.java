@@ -97,7 +97,7 @@ public class BudgetListController {
         return new ResponseEntity(budgetListManager.findById(id), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete")
+        @DeleteMapping("/delete")
     public ResponseEntity deleteById(@RequestParam Long id){
         budgetListManager.findById(id).orElseThrow(EntityNotFoundException::new);
         if(!validatePermissions(budgetListManager.findById(id).get())){

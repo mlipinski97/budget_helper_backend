@@ -27,7 +27,7 @@ public class BudgetList {
     private LocalDate dueDate;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "budgetList")
+    @OneToMany(mappedBy = "budgetList", cascade = CascadeType.ALL)
     private Set<Expense> expenses;
 
     @JsonIgnore
