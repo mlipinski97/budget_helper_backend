@@ -1,6 +1,7 @@
 package pl.lipinski.engineerdegree.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -29,10 +30,12 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "expenseOwner")
+    @Cascade(org.hibernate.annotations.CascadeType.DETACH)
     private Set<Expense> expenses;
 
     @JsonIgnore
     @OneToMany(mappedBy = "intersectionUser")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     private Set<UserBudgetListIntersection> intersections;
 
     public User() {
