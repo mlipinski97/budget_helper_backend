@@ -30,12 +30,10 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "expenseOwner")
-    @Cascade(org.hibernate.annotations.CascadeType.DETACH)
     private Set<Expense> expenses;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "intersectionUser")
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+    @OneToMany(mappedBy = "intersectionUser", cascade = CascadeType.ALL)
     private Set<UserBudgetListIntersection> intersections;
 
     public User() {

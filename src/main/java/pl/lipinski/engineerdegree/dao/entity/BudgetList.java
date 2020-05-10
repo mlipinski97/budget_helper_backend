@@ -31,8 +31,7 @@ public class BudgetList {
     private Set<Expense> expenses;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "intersectionBudgetList")
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+    @OneToMany(mappedBy = "intersectionBudgetList", cascade = CascadeType.ALL)
     private Set<UserBudgetListIntersection> intersections;
 
     public BudgetList() {
