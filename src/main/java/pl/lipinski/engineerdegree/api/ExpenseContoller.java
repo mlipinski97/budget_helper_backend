@@ -157,6 +157,30 @@ public class ExpenseContoller {
         return ResponseEntity.ok(updatedExpense);
     }
 
+    @PatchMapping("/changeDoneState")
+    public ResponseEntity changeDoneState(@RequestParam Long id){
+        Optional<Expense> expense = expenseManager.findById(id);
+        if(!expense.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    EXPENSE_NOT_FOUND_ERROR_CODE.getValue(),
+                    Arrays.asList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        if(!validatePermissions(expense.get())){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        if(expense.get().getDone()){
+            expense.get().setDone(false);
+        } else{
+            expense.get().setDone(true);
+        }
+        Expense updatedExpense = expenseManager.addExpense(expense.get());
+        return ResponseEntity.ok(updatedExpense);
+    }
+
     @PatchMapping("/edit")
     public ResponseEntity edit(@RequestParam Long id,
                                @ModelAttribute("expenseform")ExpenseDto expenseDto,
