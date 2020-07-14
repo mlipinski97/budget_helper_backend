@@ -157,7 +157,7 @@ public class ExpenseContoller {
         return ResponseEntity.ok(updatedExpense);
     }
 
-    @PatchMapping("/changeDoneState")
+    @PatchMapping("/changedonestate")
     public ResponseEntity changeDoneState(@RequestParam Long id){
         Optional<Expense> expense = expenseManager.findById(id);
         if(!expense.isPresent()){
