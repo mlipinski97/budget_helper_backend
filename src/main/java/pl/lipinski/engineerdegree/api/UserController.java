@@ -18,10 +18,7 @@ import pl.lipinski.engineerdegree.manager.UserManager;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.UserRegistrationValidator;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static pl.lipinski.engineerdegree.util.error.ERRORCODES.BUDGET_LIST_NOT_FOUND_ERROR_CODE;
 import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE;
@@ -60,7 +57,7 @@ public class UserController {
     }
 
     @GetMapping("/getallbybudgetlistid")
-    public ResponseEntity<Iterable<UserBudgetListIntersection>> getAllByBudgetListId(@RequestParam Long budgetListId){
+    public ResponseEntity<Iterable<User>> getAllByBudgetListId(@RequestParam Long budgetListId){
         Optional<BudgetList> searchedBudgetList = budgetListManager.findById(budgetListId);
         if(!searchedBudgetList.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -68,7 +65,12 @@ public class UserController {
                     Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok(userBudgetListIntersectionManager.findAllByIntersectionBudgetList(searchedBudgetList.get()));
+        ArrayList<User> users = new ArrayList<>();
+        for (UserBudgetListIntersection ubli : userBudgetListIntersectionManager
+                .findAllByIntersectionBudgetList(searchedBudgetList.get())) {
+            users.add(ubli.getIntersectionUser());
+        }
+        return ResponseEntity.ok(users);
     }
 
     @DeleteMapping("/delete")
