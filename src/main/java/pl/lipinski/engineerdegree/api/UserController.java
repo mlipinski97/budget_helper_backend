@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @GetMapping("/getallbybudgetlistid")
-    public ResponseEntity<Iterable<User>> getAllByBudgetListId(@RequestParam Long budgetListId){
+    public ResponseEntity<Iterable<UserDetailsDto>> getAllByBudgetListId(@RequestParam Long budgetListId){
         Optional<BudgetList> searchedBudgetList = budgetListManager.findById(budgetListId);
         if(!searchedBudgetList.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -65,10 +65,10 @@ public class UserController {
                     Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        ArrayList<User> users = new ArrayList<>();
+        ArrayList<UserDetailsDto> users = new ArrayList<>();
         for (UserBudgetListIntersection ubli : userBudgetListIntersectionManager
                 .findAllByIntersectionBudgetList(searchedBudgetList.get())) {
-            users.add(ubli.getIntersectionUser());
+            users.add(modelMapper.map(ubli.getIntersectionUser(), UserDetailsDto.class));
         }
         return ResponseEntity.ok(users);
     }
