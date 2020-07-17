@@ -20,10 +20,7 @@ import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.BudgetListValidator;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -91,11 +88,12 @@ public class BudgetListController {
         if(!validatePermissions(budgetListManager.findById(id).get())){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(budgetListManager.findById(id), HttpStatus.OK);
     }
+
 
         @DeleteMapping("/delete")
     public ResponseEntity deleteById(@RequestParam Long id){
@@ -103,7 +101,7 @@ public class BudgetListController {
         if(!validatePermissions(budgetListManager.findById(id).get())){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         budgetListManager.deleteById(id);
@@ -134,13 +132,13 @@ public class BudgetListController {
         if(!budgetListToUpdate.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         if(!validatePermissions(budgetListToUpdate.get())){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         budgetListValidator.validate(budgetListDto, bindingResult);
@@ -164,7 +162,7 @@ public class BudgetListController {
         if(!user.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
@@ -172,13 +170,13 @@ public class BudgetListController {
         if(!budgetList.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         if(!validatePermissions(budgetList.get())){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager.
@@ -186,7 +184,7 @@ public class BudgetListController {
         if(intersection.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
-                    Arrays.asList(INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         UserBudgetListIntersection intersectionToReturn = userBudgetListIntersectionManager.save(user.get(), budgetList.get());
@@ -199,7 +197,7 @@ public class BudgetListController {
         if(!user.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
 
@@ -207,13 +205,13 @@ public class BudgetListController {
         if(!budgetList.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         if(!validatePermissions(budgetList.get())){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager.
@@ -221,7 +219,7 @@ public class BudgetListController {
         if(!budgetList.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     INTERSECTION_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(INTERSECTION_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(INTERSECTION_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
 
@@ -229,14 +227,16 @@ public class BudgetListController {
         return ResponseEntity.ok(0);
     }
 
+
+
     private boolean validatePermissions(BudgetList budgetList){
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userManager.findByUsername(name);
         if(!user.isPresent()){
             return false;
         }
-        return userBudgetListIntersectionManager.findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList).isPresent()
-                || user.get().getRoles().equals("ROLE_ADMIN");
+        return userBudgetListIntersectionManager.findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList)
+                .isPresent() || user.get().getRoles().equals("ROLE_ADMIN");
     }
 
 }

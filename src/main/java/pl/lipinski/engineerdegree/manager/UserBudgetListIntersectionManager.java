@@ -23,6 +23,10 @@ public class UserBudgetListIntersectionManager {
         return userBudgetListIntersectionRepo.findById(id);
     }
 
+    public Iterable<UserBudgetListIntersection> findAllByIntersectionBudgetList(BudgetList budgetList){
+        return userBudgetListIntersectionRepo.findAllByIntersectionBudgetList(budgetList);
+    }
+
     public void deleteById(Long id){
         userBudgetListIntersectionRepo.deleteById(id);
     }

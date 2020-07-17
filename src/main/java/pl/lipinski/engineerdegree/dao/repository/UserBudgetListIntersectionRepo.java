@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface UserBudgetListIntersectionRepo extends JpaRepository<UserBudgetListIntersection, Long> {
     public Iterable<UserBudgetListIntersection> findAllByIntersectionUser(User user);
     public Optional<UserBudgetListIntersection> findByIntersectionUserAndIntersectionBudgetList(User user, BudgetList budgetList);
+    public Iterable<UserBudgetListIntersection> findAllByIntersectionBudgetList(BudgetList budgetList);
 }

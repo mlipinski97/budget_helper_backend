@@ -68,7 +68,7 @@ public class ExpenseContoller {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/getbyid")
     public ResponseEntity findById(@RequestParam Long id){
         Expense expense = expenseManager.findById(id).orElseThrow(EntityNotFoundException::new);
         if(!validatePermissions(expense)){
