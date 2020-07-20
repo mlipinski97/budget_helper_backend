@@ -108,7 +108,7 @@ public class BudgetListController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity addBudgetList(@ModelAttribute("budgetlistform")BudgetListDto budgetListDto,
+    public ResponseEntity<BudgetList> addBudgetList(@ModelAttribute("budgetlistform")BudgetListDto budgetListDto,
                                         BindingResult bindingResult){
         budgetListValidator.validate(budgetListDto, bindingResult);
         if(bindingResult.hasErrors()){
@@ -124,7 +124,7 @@ public class BudgetListController {
     }
 
     @PatchMapping("/edit")
-    public ResponseEntity edit(@RequestParam Long id,
+    public ResponseEntity<BudgetList> edit(@RequestParam Long id,
                                @ModelAttribute("budgetlistform") BudgetListDto budgetListDto,
                                BindingResult bindingResult) {
         Optional<BudgetList> budgetListToUpdate = budgetListManager.findById(id);

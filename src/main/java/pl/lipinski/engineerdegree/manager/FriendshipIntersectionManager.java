@@ -26,7 +26,7 @@ public class FriendshipIntersectionManager {
         return friendshipIntersectionRepo.findAllByRequesterOrFriend(user);
     }
 
-    public Optional<FriendshipIntersection> findByRequesterOrFriend(User requester, User friend){
+    public Optional<FriendshipIntersection> findByUsers(User requester, User friend){
         return friendshipIntersectionRepo.findByUsers(requester, friend);
     }
 
@@ -34,13 +34,15 @@ public class FriendshipIntersectionManager {
         friendshipIntersectionRepo.deleteById(id);
     }
 
-
-
     public FriendshipIntersection save(User requester, User friend){
         FriendshipIntersection friendshipIntersection = new FriendshipIntersection();
         friendshipIntersection.setAccepted(false);
         friendshipIntersection.setRequester(requester);
         friendshipIntersection.setFriend(friend);
         return friendshipIntersectionRepo.save(friendshipIntersection);
+    }
+
+    public FriendshipIntersection acceptFriendship(FriendshipIntersection intersection){
+        return friendshipIntersectionRepo.save(intersection);
     }
 }

@@ -153,7 +153,7 @@ public class UserController {
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(friendshipIntersectionManager.
-                findByRequesterOrFriend(requester.get(), friend.get()));
+                findByUsers(requester.get(), friend.get()));
     }
 
     @PostMapping("/friendship/add")
@@ -174,10 +174,8 @@ public class UserController {
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         Optional<FriendshipIntersection> intersection = friendshipIntersectionManager
-                .findByRequesterOrFriend(requester.get(), friend.get());
-        Optional<FriendshipIntersection> reverseIntersection = friendshipIntersectionManager
-                .findByRequesterOrFriend(friend.get(), requester.get());
-        if(intersection.isPresent() || reverseIntersection.isPresent()){
+                .findByUsers(requester.get(), friend.get());
+        if(intersection.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
                     Collections.singletonList(FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
@@ -203,7 +201,44 @@ public class UserController {
                     Collections.singletonList(REQUESTER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
+        Optional<FriendshipIntersection> intersection = friendshipIntersectionManager
+                .findByUsers(requester.get(), friend.get());
+        if(intersection.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
+                    Collections.singletonList(FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        friendshipIntersectionManager.deleteById(intersection.get().getId());
+        return ResponseEntity.ok(0);
+    }
 
-        return null;
+    @PatchMapping("/friendship/accept")
+    public ResponseEntity<FriendshipIntersection> acceptFriendship(@RequestParam String requesterUsername){
+        Optional<User> requester = userManager.findByUsername(requesterUsername);
+        if(!requester.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        String friendUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> friend = userManager.findByUsername(friendUsername);
+        if(!friend.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    REQUESTER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(REQUESTER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        Optional<FriendshipIntersection> intersection = friendshipIntersectionManager
+                .findByUsers(requester.get(), friend.get());
+        if(intersection.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
+                    Collections.singletonList(FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        intersection.get().setAccepted(true);
+        return ResponseEntity.ok(friendshipIntersectionManager.acceptFriendship(intersection.get()));
     }
 }
