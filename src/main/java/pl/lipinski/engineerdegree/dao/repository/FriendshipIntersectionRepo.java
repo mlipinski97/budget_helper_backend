@@ -7,6 +7,7 @@ import pl.lipinski.engineerdegree.dao.entity.intersection.FriendshipIntersection
 import java.util.Optional;
 
 public interface FriendshipIntersectionRepo extends JpaRepository<FriendshipIntersection, Long> {
-    public Iterable<FriendshipIntersection> findAllByRequesterOrFriend(User requester, User friend);
+    public Iterable<FriendshipIntersection> findAllByRequesterOrFriend(User requester);
     public Optional<FriendshipIntersection> findByRequesterAndFriend(User requester, User friend);
+    public Optional<FriendshipIntersection> findByRequesterAndFriendOrFriendAndRequester(User requester, User friend);
 }

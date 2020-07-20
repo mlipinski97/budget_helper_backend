@@ -121,9 +121,44 @@ public class UserController {
         return modelMapper.map(user.get(), UserDetailsDto.class);
     }
 
+    @GetMapping("/friendship/getallfriends")
+    public ResponseEntity<Iterable<FriendshipIntersection>> getAllFriends(){
+        String requesterName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> requester = userManager.findByUsername(requesterName);
+        if(!requester.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    REQUESTER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(REQUESTER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(friendshipIntersectionManager.findAllByRequesterOrFriend(requester.get()));
+    }
+
+
+    @GetMapping("/friendship/findFriendship")
+    public ResponseEntity<Optional<FriendshipIntersection>> findFriendship(@RequestParam String friendUsername){
+        Optional<User> friend = userManager.findByUsername(friendUsername);
+        if(!friend.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        String requesterName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> requester = userManager.findByUsername(requesterName);
+        if(!requester.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    REQUESTER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(REQUESTER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(friendshipIntersectionManager.
+                findByRequesterAndFriendOrFriendAndRequester(requester.get(), friend.get()));
+    }
+
     @PostMapping("/friendship/add")
-    public ResponseEntity<FriendshipIntersection> saveFriendshipIntersection(@RequestParam String friendUserName){
-        Optional<User> friend = userManager.findByUsername(friendUserName);
+    public ResponseEntity<FriendshipIntersection> saveFriendshipIntersection(@RequestParam String friendUsername){
+        Optional<User> friend = userManager.findByUsername(friendUsername);
         if(!friend.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_NOT_FOUND_ERROR_CODE.getValue(),
@@ -140,7 +175,9 @@ public class UserController {
         }
         Optional<FriendshipIntersection> intersection = friendshipIntersectionManager
                 .findByRequesterOrFriend(requester.get(), friend.get());
-        if(intersection.isPresent()){
+        Optional<FriendshipIntersection> reverseIntersection = friendshipIntersectionManager
+                .findByRequesterOrFriend(friend.get(), requester.get());
+        if(intersection.isPresent() || reverseIntersection.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
                     Collections.singletonList(FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
@@ -149,4 +186,24 @@ public class UserController {
         return ResponseEntity.ok(friendshipIntersectionManager.save(requester.get(), friend.get()));
     }
 
+    @DeleteMapping("/friendship/delete")
+    public ResponseEntity removeFriendship(@RequestParam String friendUsername){
+        Optional<User> friend = userManager.findByUsername(friendUsername);
+        if(!friend.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        String requesterName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> requester = userManager.findByUsername(requesterName);
+        if(!requester.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    REQUESTER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(REQUESTER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+
+        return null;
+    }
 }
