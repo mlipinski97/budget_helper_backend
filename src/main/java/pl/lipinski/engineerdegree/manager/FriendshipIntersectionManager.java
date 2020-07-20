@@ -7,6 +7,7 @@ import pl.lipinski.engineerdegree.dao.entity.intersection.FriendshipIntersection
 import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 import pl.lipinski.engineerdegree.dao.repository.FriendshipIntersectionRepo;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 @Service
@@ -23,8 +24,8 @@ public class FriendshipIntersectionManager {
         return friendshipIntersectionRepo.findById(id);
     }
 
-    public Iterable<FriendshipIntersection> findAllByRequesterOrFriend(User requester){
-        return friendshipIntersectionRepo.findAllByRequesterOrFriend(requester);
+    public Iterable<FriendshipIntersection> findAllByRequesterOrFriend(User user){
+        return friendshipIntersectionRepo.findAllByRequesterOrFriend(user);
     }
 
     public Optional<FriendshipIntersection> findByRequesterOrFriend(User requester, User friend){
@@ -35,9 +36,7 @@ public class FriendshipIntersectionManager {
         friendshipIntersectionRepo.deleteById(id);
     }
 
-    public Optional<FriendshipIntersection> findByRequesterAndFriendOrFriendAndRequester(User requester, User friend){
-        return friendshipIntersectionRepo.findByRequesterAndFriendOrFriendAndRequester(requester, friend);
-    }
+
 
     public FriendshipIntersection save(User requester, User friend){
         FriendshipIntersection friendshipIntersection = new FriendshipIntersection();
