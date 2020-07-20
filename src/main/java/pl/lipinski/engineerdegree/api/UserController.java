@@ -122,7 +122,7 @@ public class UserController {
     }
 
     @PostMapping("/friendship/add")
-    public ResponseEntity<FriendshipIntersection> saveFriendshipIntersection(String friendUserName){
+    public ResponseEntity<FriendshipIntersection> saveFriendshipIntersection(@RequestParam String friendUserName){
         Optional<User> friend = userManager.findByUsername(friendUserName);
         if(!friend.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
