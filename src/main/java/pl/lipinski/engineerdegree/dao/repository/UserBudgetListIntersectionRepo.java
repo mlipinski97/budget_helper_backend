@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.User;
-import pl.lipinski.engineerdegree.dao.entity.UserBudgetListIntersection;
+import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 
 import java.util.Optional;
 

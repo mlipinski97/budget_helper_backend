@@ -1,7 +1,7 @@
 package pl.lipinski.engineerdegree.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Cascade;
+import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -36,10 +36,12 @@ public class User {
     @OneToMany(mappedBy = "intersectionUser", cascade = CascadeType.ALL)
     private Set<UserBudgetListIntersection> intersections;
 
+
+
     public User() {
     }
 
-    //for testing purpouse only.
+    //for testing purpose only.
     public User(String username, String password, boolean isEnabled, String roles) {
         this.username = username;
         this.password = password;
@@ -102,4 +104,6 @@ public class User {
     public void setIntersections(Set<UserBudgetListIntersection> intersection) {
         this.intersections = intersection;
     }
+
+
 }

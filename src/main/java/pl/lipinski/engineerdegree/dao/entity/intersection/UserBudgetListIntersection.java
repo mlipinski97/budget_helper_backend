@@ -1,4 +1,7 @@
-package pl.lipinski.engineerdegree.dao.entity;
+package pl.lipinski.engineerdegree.dao.entity.intersection;
+
+import pl.lipinski.engineerdegree.dao.entity.BudgetList;
+import pl.lipinski.engineerdegree.dao.entity.User;
 
 import javax.persistence.*;
 

@@ -2,6 +2,7 @@ package pl.lipinski.engineerdegree.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 
 import javax.persistence.*;
 import java.time.LocalDate;

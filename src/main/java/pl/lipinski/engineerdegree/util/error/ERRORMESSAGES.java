@@ -8,10 +8,12 @@ public enum ERRORMESSAGES {
     USERNAME_TAKEN_ERROR_MESSAGE("This username is already registered!"),
     EXPENSE_NOT_FOUND_ERROR_MESSAGE("Expense not found!"),
     BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE("Budget list not found!"),
-    INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE("User already have permission for that budget list!"),
+    BUDGET_LIST_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE("User already have permission for that budget list!"),
     USER_NOT_FOUND_ERROR_MESSAGE("User not found!"),
     INTERSECTION_NOT_FOUND_ERROR_MESSAGE("This user does not have permission for that list, no permission to revoke!"),
-    USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE("This user dont have permission to access this entity!");
+    USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE("This user dont have permission to access this entity!"),
+    REQUESTER_NOT_FOUND_ERROR_MESSAGE("Requester was not found in database!"),
+    FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE("You are already friends with that user!");
 
     private String message;
 

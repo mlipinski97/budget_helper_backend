@@ -9,9 +9,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.lipinski.engineerdegree.dao.dto.BudgetListDto;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
-import pl.lipinski.engineerdegree.dao.entity.Expense;
 import pl.lipinski.engineerdegree.dao.entity.User;
-import pl.lipinski.engineerdegree.dao.entity.UserBudgetListIntersection;
+import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 import pl.lipinski.engineerdegree.manager.BudgetListManager;
 import pl.lipinski.engineerdegree.manager.UserBudgetListIntersectionManager;
 import pl.lipinski.engineerdegree.manager.UserManager;
@@ -179,12 +178,12 @@ public class BudgetListController {
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager.
-                findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
+        Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager
+                .findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
         if(intersection.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
-                    Collections.singletonList(INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
+                    BUDGET_LIST_INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
+                    Collections.singletonList(BUDGET_LIST_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         UserBudgetListIntersection intersectionToReturn = userBudgetListIntersectionManager.save(user.get(), budgetList.get());

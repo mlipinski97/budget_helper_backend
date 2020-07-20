@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.User;
-import pl.lipinski.engineerdegree.dao.entity.UserBudgetListIntersection;
+import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 import pl.lipinski.engineerdegree.dao.repository.UserBudgetListIntersectionRepo;
 
 import java.util.Optional;

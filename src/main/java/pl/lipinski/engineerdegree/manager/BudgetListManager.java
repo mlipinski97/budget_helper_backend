@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.User;
-import pl.lipinski.engineerdegree.dao.entity.UserBudgetListIntersection;
+import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 import pl.lipinski.engineerdegree.dao.repository.BudgetListRepo;
 
 import javax.persistence.EntityNotFoundException;

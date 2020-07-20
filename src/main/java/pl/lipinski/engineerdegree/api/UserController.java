@@ -11,8 +11,10 @@ import pl.lipinski.engineerdegree.dao.dto.UserDetailsDto;
 import pl.lipinski.engineerdegree.dao.dto.UserRegistrationDto;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.User;
-import pl.lipinski.engineerdegree.dao.entity.UserBudgetListIntersection;
+import pl.lipinski.engineerdegree.dao.entity.intersection.FriendshipIntersection;
+import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 import pl.lipinski.engineerdegree.manager.BudgetListManager;
+import pl.lipinski.engineerdegree.manager.FriendshipIntersectionManager;
 import pl.lipinski.engineerdegree.manager.UserBudgetListIntersectionManager;
 import pl.lipinski.engineerdegree.manager.UserManager;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
@@ -20,8 +22,8 @@ import pl.lipinski.engineerdegree.util.validator.UserRegistrationValidator;
 
 import java.util.*;
 
-import static pl.lipinski.engineerdegree.util.error.ERRORCODES.BUDGET_LIST_NOT_FOUND_ERROR_CODE;
-import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE;
+import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
+import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -33,17 +35,20 @@ public class UserController {
     private final UserRegistrationValidator userRegistrationValidator;
     private UserBudgetListIntersectionManager userBudgetListIntersectionManager;
     private BudgetListManager budgetListManager;
+    private FriendshipIntersectionManager friendshipIntersectionManager;
 
     @Autowired
     public UserController(UserManager userManager,
                           UserRegistrationValidator userRegistrationValidator,
                           UserBudgetListIntersectionManager userBudgetListIntersectionManager,
-                          BudgetListManager budgetListManager) {
+                          BudgetListManager budgetListManager,
+                          FriendshipIntersectionManager friendshipIntersectionManager) {
         this.userManager = userManager;
         this.modelMapper = new ModelMapper();
         this.userRegistrationValidator = userRegistrationValidator;
         this.userBudgetListIntersectionManager = userBudgetListIntersectionManager;
         this.budgetListManager = budgetListManager;
+        this.friendshipIntersectionManager = friendshipIntersectionManager;
     }
 
     @GetMapping("/getall")
@@ -115,4 +120,33 @@ public class UserController {
         user.orElseThrow(NoSuchElementException::new);
         return modelMapper.map(user.get(), UserDetailsDto.class);
     }
+
+    @PostMapping("/friendship/add")
+    public ResponseEntity<FriendshipIntersection> saveFriendshipIntersection(String friendUserName){
+        Optional<User> friend = userManager.findByUsername(friendUserName);
+        if(!friend.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        String requesterName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> requester = userManager.findByUsername(requesterName);
+        if(!requester.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    REQUESTER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(REQUESTER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        Optional<FriendshipIntersection> intersection = friendshipIntersectionManager
+                .findByRequesterOrFriend(requester.get(), friend.get());
+        if(intersection.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
+                    Collections.singletonList(FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(friendshipIntersectionManager.save(requester.get(), friend.get()));
+    }
+
 }
