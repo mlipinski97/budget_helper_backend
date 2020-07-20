@@ -152,9 +152,8 @@ public class UserController {
                     Collections.singletonList(REQUESTER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-/*        return ResponseEntity.ok(friendshipIntersectionManager.
-                findByRequesterAndFriendOrFriendAndRequester(requester.get(), friend.get()));*/
-        return null;
+        return ResponseEntity.ok(friendshipIntersectionManager.
+                findByRequesterOrFriend(requester.get(), friend.get()));
     }
 
     @PostMapping("/friendship/add")

@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.dao.entity.intersection.FriendshipIntersection;
-import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 import pl.lipinski.engineerdegree.dao.repository.FriendshipIntersectionRepo;
 
-import javax.persistence.EntityManager;
 import java.util.Optional;
 
 @Service
@@ -29,7 +27,7 @@ public class FriendshipIntersectionManager {
     }
 
     public Optional<FriendshipIntersection> findByRequesterOrFriend(User requester, User friend){
-        return friendshipIntersectionRepo.findByRequesterAndFriend(requester, friend);
+        return friendshipIntersectionRepo.findByUsers(requester, friend);
     }
 
     public void deleteById(Long id){
