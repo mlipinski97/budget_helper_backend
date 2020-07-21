@@ -203,10 +203,10 @@ public class UserController {
         }
         Optional<FriendshipIntersection> intersection = friendshipIntersectionManager
                 .findByUsers(requester.get(), friend.get());
-        if(intersection.isPresent()){
+        if(!intersection.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
-                    Collections.singletonList(FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
+                    FRIENDSHIP_INTERSECTION_DOES_NOT_EXISTS_ERROR_CODE.getValue(),
+                    Collections.singletonList(FRIENDSHIP_INTERSECTION_DOES_NOT_EXISTS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         friendshipIntersectionManager.deleteById(intersection.get().getId());
@@ -232,10 +232,10 @@ public class UserController {
         }
         Optional<FriendshipIntersection> intersection = friendshipIntersectionManager
                 .findByUsers(requester.get(), friend.get());
-        if(intersection.isPresent()){
+        if(!intersection.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
-                    Collections.singletonList(FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
+                    FRIENDSHIP_INTERSECTION_DOES_NOT_EXISTS_ERROR_CODE.getValue(),
+                    Collections.singletonList(FRIENDSHIP_INTERSECTION_DOES_NOT_EXISTS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         intersection.get().setAccepted(true);
