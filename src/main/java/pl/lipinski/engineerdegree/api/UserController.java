@@ -181,6 +181,12 @@ public class UserController {
                     Collections.singletonList(FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
+        if(requesterName.equals(friendUsername)){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    FRIENDSHIP_WITH_SELF_NOT_ALLOWED_ERROR_CODE.getValue(),
+                    Collections.singletonList(FRIENDSHIP_WITH_SELF_NOT_ALLOWED_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
         return ResponseEntity.ok(friendshipIntersectionManager.save(requester.get(), friend.get()));
     }
 

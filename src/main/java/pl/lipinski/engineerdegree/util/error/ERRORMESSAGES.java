@@ -14,7 +14,8 @@ public enum ERRORMESSAGES {
     USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE("This user dont have permission to access this entity!"),
     REQUESTER_NOT_FOUND_ERROR_MESSAGE("Requester was not found in database!"),
     FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE("You are already friends with that user!"),
-    FRIENDSHIP_INTERSECTION_DOES_NOT_EXISTS_ERROR_MESSAGE("You are not friends with that user!");
+    FRIENDSHIP_INTERSECTION_DOES_NOT_EXISTS_ERROR_MESSAGE("You are not friends with that user!"),
+    FRIENDSHIP_WITH_SELF_NOT_ALLOWED_ERROR_MESSAGE("You can not befriend yourself, sadly... :(");
 
     private String message;
 

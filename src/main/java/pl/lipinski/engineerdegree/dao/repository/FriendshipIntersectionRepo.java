@@ -17,4 +17,10 @@ public interface FriendshipIntersectionRepo extends JpaRepository<FriendshipInte
     @Query("SELECT f FROM FriendshipIntersection f WHERE f.requester = :#{#requester} AND f.friend = :#{#friend} " +
             "OR f.requester = :#{#friend} AND f.friend = :#{#requester}")
     public Optional<FriendshipIntersection> findByUsers(@Param("requester")User requester, @Param("friend") User friend);
+
+    @Query("SELECT f FROM FriendshipIntersection f WHERE f.requester.username = :#{#knownUsername} " +
+            "AND f.friend.username LIKE '%:#{#searchedUsername}%' " +
+            "OR f.friend.username = :#{#knownUsername} AND f.requester.username LIKE '%:#{#searchedUsername}%'")
+    public Iterable<FriendshipIntersection> findAllByRequesterOrFriendContaining(@Param("knownUsername") String knownUsername,
+                                                                                 @Param("searchedUsername") String searchedUsername);
 }
