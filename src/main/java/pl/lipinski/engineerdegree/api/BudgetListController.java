@@ -108,7 +108,7 @@ public class BudgetListController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete_many")
+    @DeleteMapping("/deletemany")
     public ResponseEntity deleteManyById(@RequestBody ArrayList<Long> idList){
         for(Long id : idList){
             budgetListManager.findById(id).orElseThrow(EntityNotFoundException::new);
