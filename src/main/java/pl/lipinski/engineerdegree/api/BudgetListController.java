@@ -107,7 +107,7 @@ public class BudgetListController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/many/")
+    @DeleteMapping("/delete_many/")
     public ResponseEntity deleteManyById(@ModelAttribute("budgetlistidlist") List<Long> idList,
                                          BindingResult bindingResult){
         if(bindingResult.hasErrors()){
