@@ -107,6 +107,23 @@ public class BudgetListController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete/many/")
+    public ResponseEntity deleteManyById(@RequestParam List<Long> idList){
+        for(Long id : idList){
+            budgetListManager.findById(id).orElseThrow(EntityNotFoundException::new);
+            if(!validatePermissions(budgetListManager.findById(id).get())){
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                        Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
+        }
+        for(Long id : idList){
+            budgetListManager.deleteById(id);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<BudgetList> addBudgetList(@ModelAttribute("budgetlistform")BudgetListDto budgetListDto,
                                         BindingResult bindingResult){
