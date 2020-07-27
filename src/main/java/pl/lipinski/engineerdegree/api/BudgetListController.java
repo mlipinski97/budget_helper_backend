@@ -109,14 +109,7 @@ public class BudgetListController {
     }
 
     @DeleteMapping("/delete_many")
-    public ResponseEntity deleteManyById(@ModelAttribute("budgetlistidlist") ArrayList<Long> idList,
-                                         BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    budgetListValidator.getErrorCode(),
-                    budgetListValidator.getErrorMessages(bindingResult));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity deleteManyById(@RequestBody ArrayList<Long> idList){
         for(Long id : idList){
             budgetListManager.findById(id).orElseThrow(EntityNotFoundException::new);
             if(!validatePermissions(budgetListManager.findById(id).get())){
@@ -129,7 +122,7 @@ public class BudgetListController {
         for(Long id : idList){
             budgetListManager.deleteById(id);
         }
-        return ResponseEntity.ok(idList);
+        return ResponseEntity.ok(null);
     }
 
     @PostMapping("/add")
