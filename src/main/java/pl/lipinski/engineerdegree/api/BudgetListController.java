@@ -19,6 +19,7 @@ import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.BudgetListValidator;
 
 import javax.persistence.EntityNotFoundException;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -107,8 +108,8 @@ public class BudgetListController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete_many/")
-    public ResponseEntity deleteManyById(@ModelAttribute("budgetlistidlist") List<Long> idList,
+    @DeleteMapping("/delete_many")
+    public ResponseEntity deleteManyById(@ModelAttribute("budgetlistidlist") ArrayList<Long> idList,
                                          BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
