@@ -129,7 +129,7 @@ public class BudgetListController {
         for(Long id : idList){
             budgetListManager.deleteById(id);
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok(idList);
     }
 
     @PostMapping("/add")
