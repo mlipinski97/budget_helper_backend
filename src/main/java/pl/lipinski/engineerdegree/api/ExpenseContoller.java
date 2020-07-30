@@ -70,7 +70,7 @@ public class ExpenseContoller {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @DeleteMapping("/deletebymany")
+    @DeleteMapping("/deletemany")
     public ResponseEntity deleteById(@RequestBody List<Long> idList){
         for(Long id : idList) {
             expenseManager.findById(id).orElseThrow(EntityNotFoundException::new);
