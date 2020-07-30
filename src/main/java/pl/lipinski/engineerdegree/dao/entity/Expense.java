@@ -35,7 +35,6 @@ public class Expense {
     private Boolean isDone = false;
 
     @ManyToOne
-    @NotNull
     private Category category;
 
     public Expense() {
