@@ -34,6 +34,10 @@ public class Expense {
 
     private Boolean isDone = false;
 
+    @ManyToOne
+    @NotNull
+    private Category category;
+
     public Expense() {
     }
 
@@ -91,5 +95,13 @@ public class Expense {
 
     public void setDone(Boolean done) {
         isDone = done;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

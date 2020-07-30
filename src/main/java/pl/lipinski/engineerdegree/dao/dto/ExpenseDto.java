@@ -3,6 +3,7 @@ package pl.lipinski.engineerdegree.dao.dto;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
+import pl.lipinski.engineerdegree.dao.entity.Category;
 import pl.lipinski.engineerdegree.dao.entity.User;
 
 import java.time.LocalDate;
@@ -18,6 +19,15 @@ public class ExpenseDto {
 
     private User expenseOwner;
     private BudgetList budgetList;
+    private Category category;
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public BudgetList getBudgetList() {
         return budgetList;

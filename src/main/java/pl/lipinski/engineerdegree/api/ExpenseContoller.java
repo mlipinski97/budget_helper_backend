@@ -9,12 +9,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.lipinski.engineerdegree.dao.dto.ExpenseDto;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
+import pl.lipinski.engineerdegree.dao.entity.Category;
 import pl.lipinski.engineerdegree.dao.entity.Expense;
 import pl.lipinski.engineerdegree.dao.entity.User;
-import pl.lipinski.engineerdegree.manager.BudgetListManager;
-import pl.lipinski.engineerdegree.manager.ExpenseManager;
-import pl.lipinski.engineerdegree.manager.UserBudgetListIntersectionManager;
-import pl.lipinski.engineerdegree.manager.UserManager;
+import pl.lipinski.engineerdegree.manager.*;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.ExpenseValidator;
 
@@ -36,6 +34,7 @@ public class ExpenseContoller {
     private ExpenseValidator expenseValidator;
     private BudgetListManager budgetListManager;
     private UserManager userManager;
+    private CategoryManager categoryManager;
     private UserBudgetListIntersectionManager intersectionManager;
 
     @Autowired
@@ -43,13 +42,15 @@ public class ExpenseContoller {
                             ExpenseValidator expenseValidator,
                             BudgetListManager budgetListManage,
                             UserManager userManager,
-                            UserBudgetListIntersectionManager intersectionManager) {
+                            UserBudgetListIntersectionManager intersectionManager,
+                            CategoryManager categoryManager) {
         this.expenseManager = expenseManager;
         this.modelMapper = new ModelMapper();
         this.expenseValidator = expenseValidator;
         this.budgetListManager = budgetListManage;
         this.userManager = userManager;
         this.intersectionManager = intersectionManager;
+        this.categoryManager = categoryManager;
     }
 
     @GetMapping("/getall")
@@ -108,13 +109,14 @@ public class ExpenseContoller {
 
     @PostMapping("/add")
     public ResponseEntity save(@RequestParam Long budgetListId,
+                               @RequestParam String categoryName,
                                @ModelAttribute("expenseform")ExpenseDto expenseDto,
                                BindingResult bindingResult) {
         Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
         if(!budgetList.isPresent()){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         expenseDto.setBudgetList(budgetList.get());
@@ -125,11 +127,19 @@ public class ExpenseContoller {
                     expenseValidator.getErrorMessages(bindingResult));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
+        Optional<Category> category = categoryManager.findByName(categoryName);
+        if(!category.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    CATEGORY_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(CATEGORY_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        expenseDto.setCategory(category.get());
         Expense expense = modelMapper.map(expenseDto, Expense.class);
         if(!validatePermissions(expense)){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         expenseManager.addExpense(expense);
@@ -199,7 +209,7 @@ public class ExpenseContoller {
         Expense updatedExpense = expenseManager.addExpense(expense.get());
         return ResponseEntity.ok(updatedExpense);
     }
-
+    //TODO change edit to acomodaate to adding category field
     @PatchMapping("/edit")
     public ResponseEntity edit(@RequestParam Long id,
                                @ModelAttribute("expenseform")ExpenseDto expenseDto,

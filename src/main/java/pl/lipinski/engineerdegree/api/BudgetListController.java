@@ -19,7 +19,6 @@ import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.BudgetListValidator;
 
 import javax.persistence.EntityNotFoundException;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -138,7 +137,6 @@ public class BudgetListController {
         BudgetList budgetList = modelMapper.map(budgetListDto, BudgetList.class);
         budgetListManager.addBudgetList(budgetList);
         return ResponseEntity.ok(modelMapper.map(budgetList, BudgetList.class));
-
     }
 
     @PatchMapping("/edit")
