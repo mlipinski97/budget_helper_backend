@@ -20,6 +20,8 @@ import pl.lipinski.engineerdegree.util.validator.ExpenseValidator;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
@@ -65,6 +67,23 @@ public class ExpenseContoller {
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         expenseManager.deletebyId(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deletebymany")
+    public ResponseEntity deleteById(@RequestBody List<Long> idList){
+        for(Long id : idList) {
+            expenseManager.findById(id).orElseThrow(EntityNotFoundException::new);
+            if (!validatePermissions(expenseManager.findById(id).get())) {
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                        Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
+        }
+        for(Long id : idList){
+            expenseManager.deletebyId(id);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 

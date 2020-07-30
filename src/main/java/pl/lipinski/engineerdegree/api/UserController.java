@@ -219,6 +219,38 @@ public class UserController {
         return ResponseEntity.ok(0);
     }
 
+    @DeleteMapping("/friendship/deletemany")
+    public ResponseEntity removeFriendship(@RequestBody List<String> friendUsernames){
+       ArrayList<FriendshipIntersection> intersections = new ArrayList<>();
+       String requesterName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> requester = userManager.findByUsername(requesterName);
+        if(!requester.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    REQUESTER_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(REQUESTER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+       for(String friendUsername : friendUsernames){
+           Optional<User> friend = userManager.findByUsername(friendUsername);
+           if(!friend.isPresent()){
+               ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                       USER_NOT_FOUND_ERROR_CODE.getValue(),
+                       Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+               return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+           }
+           Optional<FriendshipIntersection> intersection = friendshipIntersectionManager
+                   .findByUsers(requester.get(), friend.get());
+           if(!intersection.isPresent()){
+               ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                       FRIENDSHIP_INTERSECTION_DOES_NOT_EXISTS_ERROR_CODE.getValue(),
+                       Collections.singletonList(FRIENDSHIP_INTERSECTION_DOES_NOT_EXISTS_ERROR_MESSAGE.getMessage()));
+               return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+           }
+           friendshipIntersectionManager.deleteById(intersection.get().getId());
+       }
+       return ResponseEntity.ok(0);
+    }
+
     @PatchMapping("/friendship/accept")
     public ResponseEntity<FriendshipIntersection> acceptFriendship(@RequestParam String requesterUsername){
         Optional<User> requester = userManager.findByUsername(requesterUsername);
