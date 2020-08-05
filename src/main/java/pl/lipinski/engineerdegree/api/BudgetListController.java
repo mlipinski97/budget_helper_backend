@@ -167,6 +167,7 @@ public class BudgetListController {
         budgetListToUpdate.get().setBudgetValue(budgetList.getBudgetValue());
         budgetListToUpdate.get().setName(budgetList.getName());
         budgetListToUpdate.get().setDueDate(budgetList.getDueDate());
+        budgetListToUpdate.get().setCurrencyCode(budgetList.getCurrencyCode());
         budgetListManager.editBudgetList(budgetListToUpdate.get());
         return ResponseEntity.ok(budgetListToUpdate.get());
     }
