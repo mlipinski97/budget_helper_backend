@@ -34,6 +34,8 @@ public class BudgetList {
     @OneToMany(mappedBy = "intersectionBudgetList", cascade = CascadeType.ALL)
     private Set<UserBudgetListIntersection> intersections;
 
+    private String currencyCode;
+
     public BudgetList() {
     }
 
@@ -92,5 +94,13 @@ public class BudgetList {
 
     public void setDueDate(LocalDate dateOfExpense) {
         this.dueDate = dateOfExpense;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 }
