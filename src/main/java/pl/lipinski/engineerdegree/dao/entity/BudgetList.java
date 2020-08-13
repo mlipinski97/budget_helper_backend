@@ -26,6 +26,9 @@ public class BudgetList {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate dueDate;
 
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate startingDate;
+
     @JsonIgnore
     @OneToMany(mappedBy = "budgetList", cascade = CascadeType.ALL)
     private Set<Expense> expenses;
@@ -102,5 +105,13 @@ public class BudgetList {
 
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
+    }
+
+    public LocalDate getStartingDate() {
+        return startingDate;
+    }
+
+    public void setStartingDate(LocalDate startingDate) {
+        this.startingDate = startingDate;
     }
 }

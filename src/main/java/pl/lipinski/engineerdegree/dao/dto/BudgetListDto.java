@@ -12,5 +12,7 @@ public class BudgetListDto {
     private Double remainingValue;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate dueDate;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate startingDate;
     private String currencyCode;
 }
