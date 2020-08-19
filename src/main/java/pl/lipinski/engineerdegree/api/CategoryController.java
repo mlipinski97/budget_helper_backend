@@ -50,20 +50,23 @@ public class CategoryController {
                                                 @RequestPart(required = false) MultipartFile categoryImage) {
         Category category = new Category();
         category.setCategoryName(categoryName);
-        String fileName = StringUtils.cleanPath(categoryImage.getName());
-        if (fileName.contains("..")) {
-            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    IMAGE_EXTENSION_NOT_VALID_ERROR_CODE.getValue(),
-                    Collections.singletonList(IMAGE_EXTENSION_NOT_VALID_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
-        }
-        try {
-            category.setCategoryImage(categoryImage.getBytes());
-        } catch (IOException e) {
-            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_CODE.getValue(),
-                    Collections.singletonList(UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        if (categoryImage != null) {
+            String fileName = StringUtils.cleanPath(categoryImage.getName());
+            if (fileName.contains("..")) {
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        IMAGE_EXTENSION_NOT_VALID_ERROR_CODE.getValue(),
+                        Collections.singletonList(IMAGE_EXTENSION_NOT_VALID_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
+
+            try {
+                category.setCategoryImage(categoryImage.getBytes());
+            } catch (IOException e) {
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_CODE.getValue(),
+                        Collections.singletonList(UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
         }
         return ResponseEntity.ok(categoryManager.add(category));
     }
@@ -80,20 +83,22 @@ public class CategoryController {
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         categoryToUpdate.get().setCategoryName(newCategoryName);
-        String fileName = StringUtils.cleanPath(categoryImage.getName());
-        if (fileName.contains("..")) {
-            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    IMAGE_EXTENSION_NOT_VALID_ERROR_CODE.getValue(),
-                    Collections.singletonList(IMAGE_EXTENSION_NOT_VALID_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
-        }
-        try {
-            categoryToUpdate.get().setCategoryImage(categoryImage.getBytes());
-        } catch (IOException e) {
-            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
-                    UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_CODE.getValue(),
-                    Collections.singletonList(UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        if(categoryImage != null){
+            String fileName = StringUtils.cleanPath(categoryImage.getName());
+            if (fileName.contains("..")) {
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        IMAGE_EXTENSION_NOT_VALID_ERROR_CODE.getValue(),
+                        Collections.singletonList(IMAGE_EXTENSION_NOT_VALID_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
+            try {
+                categoryToUpdate.get().setCategoryImage(categoryImage.getBytes());
+            } catch (IOException e) {
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_CODE.getValue(),
+                        Collections.singletonList(UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
         }
         categoryManager.editCategory(categoryToUpdate.get());
         return ResponseEntity.ok(categoryToUpdate.get());
@@ -102,7 +107,7 @@ public class CategoryController {
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestParam String categoryName) {
         categoryManager.findByName(categoryName).orElseThrow(EntityNotFoundException::new);
-        if(!validatePermissions()){
+        if (!validatePermissions()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
@@ -112,10 +117,10 @@ public class CategoryController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    private boolean validatePermissions(){
+    private boolean validatePermissions() {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userManager.findByUsername(name);
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             return false;
         }
         return user.get().getRoles().equals("ROLE_ADMIN");
