@@ -22,31 +22,32 @@ public class UserManager {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Optional<User> findByUsername(String username){
+    public Optional<User> findByUsername(String username) {
         return userRepo.findByUsername(username);
     }
 
-    public void deleteByUsername(String username){
+    public void deleteByUsername(String username) {
         userRepo.deleteByUsername(username);
     }
 
-    public Iterable<User> findAll(){
+    public Iterable<User> findAll() {
         return userRepo.findAll();
     }
 
-    public void saveUser(User user){
+    public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles("ROLE_USER");
         user.setEnabled(true);
         userRepo.save(user);
     }
 
-    public void saveAdmin(User user){
+    public void saveAdmin(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles("ROLE_ADMIN");
         user.setEnabled(true);
         userRepo.save(user);
     }
+
     @EventListener(ApplicationReadyEvent.class)
     public void dbFiller() {
         userRepo.save(new User("admin", passwordEncoder.encode("admin"), true, "ROLE_ADMIN"));

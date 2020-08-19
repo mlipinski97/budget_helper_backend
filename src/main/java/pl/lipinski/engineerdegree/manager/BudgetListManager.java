@@ -9,7 +9,9 @@ import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersec
 import pl.lipinski.engineerdegree.dao.repository.BudgetListRepo;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BudgetListManager {

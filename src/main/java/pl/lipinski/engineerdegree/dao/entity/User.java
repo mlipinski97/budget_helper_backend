@@ -37,7 +37,6 @@ public class User {
     private Set<UserBudgetListIntersection> intersections;
 
 
-
     public User() {
     }
 

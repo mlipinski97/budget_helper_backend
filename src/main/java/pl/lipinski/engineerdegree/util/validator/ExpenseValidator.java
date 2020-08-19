@@ -9,8 +9,9 @@ import pl.lipinski.engineerdegree.dao.entity.Expense;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
-import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.*;
+import static pl.lipinski.engineerdegree.util.error.ERRORCODES.EMPTY_VALUE_ERROR_CODE;
+import static pl.lipinski.engineerdegree.util.error.ERRORCODES.WRONG_EXPENSE_VALUE_ERROR_CODE;
+import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.WRONG_EXPENSE_VALUE_ERROR_MESSAGE;
 
 @Component
 public class ExpenseValidator implements Validator {
@@ -42,7 +43,7 @@ public class ExpenseValidator implements Validator {
 
         Expense expense = modelMapper.map(o, Expense.class);
 
-        if(expense.getAmount() <= 0){
+        if (expense.getAmount() <= 0) {
             errorCode = WRONG_EXPENSE_VALUE_ERROR_CODE.getValue();
             errors.rejectValue("amount", WRONG_EXPENSE_VALUE_ERROR_MESSAGE.getMessage());
         }

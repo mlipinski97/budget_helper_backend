@@ -18,23 +18,23 @@ public class FriendshipIntersectionManager {
         this.friendshipIntersectionRepo = friendshipIntersectionRepo;
     }
 
-    public Optional<FriendshipIntersection> findById(Long id){
+    public Optional<FriendshipIntersection> findById(Long id) {
         return friendshipIntersectionRepo.findById(id);
     }
 
-    public Iterable<FriendshipIntersection> findAllByRequesterOrFriend(User user){
+    public Iterable<FriendshipIntersection> findAllByRequesterOrFriend(User user) {
         return friendshipIntersectionRepo.findAllByRequesterOrFriend(user);
     }
 
-    public Optional<FriendshipIntersection> findByUsers(User requester, User friend){
+    public Optional<FriendshipIntersection> findByUsers(User requester, User friend) {
         return friendshipIntersectionRepo.findByUsers(requester, friend);
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id) {
         friendshipIntersectionRepo.deleteById(id);
     }
 
-    public FriendshipIntersection save(User requester, User friend){
+    public FriendshipIntersection save(User requester, User friend) {
         FriendshipIntersection friendshipIntersection = new FriendshipIntersection();
         friendshipIntersection.setAccepted(false);
         friendshipIntersection.setRequester(requester);
@@ -42,7 +42,7 @@ public class FriendshipIntersectionManager {
         return friendshipIntersectionRepo.save(friendshipIntersection);
     }
 
-    public FriendshipIntersection acceptFriendship(FriendshipIntersection intersection){
+    public FriendshipIntersection acceptFriendship(FriendshipIntersection intersection) {
         return friendshipIntersectionRepo.save(intersection);
     }
 }

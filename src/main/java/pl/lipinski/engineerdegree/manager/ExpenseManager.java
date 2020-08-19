@@ -26,19 +26,19 @@ public class ExpenseManager {
         this.budgetListManager = budgetListManager;
     }
 
-    public Iterable<Expense> findAll(){
+    public Iterable<Expense> findAll() {
         return expenseRepo.findAll();
     }
 
-    public Optional<Expense> findById(Long id){
+    public Optional<Expense> findById(Long id) {
         return expenseRepo.findById(id);
     }
 
-    public Iterable<Expense> findAllByBudgetList(BudgetList budgetList){
+    public Iterable<Expense> findAllByBudgetList(BudgetList budgetList) {
         return expenseRepo.findAllByBudgetList(budgetList);
     }
 
-    public void deletebyId(Long id){
+    public void deletebyId(Long id) {
         Optional<Expense> expense = findById(id);
         expense.orElseThrow(EntityNotFoundException::new);
         BudgetList budgetList = expense.get().getBudgetList();
@@ -46,12 +46,12 @@ public class ExpenseManager {
         updateBudgetListRemainingValue(budgetList);
     }
 
-    public Expense addExpense(Expense expense){
+    public Expense addExpense(Expense expense) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userManager.findByUsername(name);
         user.orElseThrow(NoSuchElementException::new);
         expense.setExpenseOwner(user.get());
-        if(expense.getDone() == null){
+        if (expense.getDone() == null) {
             expense.setDone(false);
         }
         Expense expenseToReturn = expenseRepo.save(expense);
@@ -59,7 +59,7 @@ public class ExpenseManager {
         return expenseToReturn;
     }
 
-    public void updateBudgetListRemainingValue(BudgetList budgetList){
+    public void updateBudgetListRemainingValue(BudgetList budgetList) {
         Iterable<Expense> expenses = findAllByBudgetList(budgetList);
         double expensesSummary = 0;
         for (Expense e : expenses) {

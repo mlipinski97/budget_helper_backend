@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
-import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.*;
+import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.PASSWORDS_DOESNT_MATCH_ERROR_MESSAGE;
+import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.USERNAME_TAKEN_ERROR_MESSAGE;
 
 @Component
 public class UserRegistrationValidator implements Validator {

@@ -19,27 +19,27 @@ public class UserBudgetListIntersectionManager {
         this.userBudgetListIntersectionRepo = userBudgetListIntersectionRepo;
     }
 
-    public Optional<UserBudgetListIntersection> findById(Long id){
+    public Optional<UserBudgetListIntersection> findById(Long id) {
         return userBudgetListIntersectionRepo.findById(id);
     }
 
-    public Iterable<UserBudgetListIntersection> findAllByIntersectionBudgetList(BudgetList budgetList){
+    public Iterable<UserBudgetListIntersection> findAllByIntersectionBudgetList(BudgetList budgetList) {
         return userBudgetListIntersectionRepo.findAllByIntersectionBudgetList(budgetList);
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id) {
         userBudgetListIntersectionRepo.deleteById(id);
     }
 
-    public Iterable<UserBudgetListIntersection> findAllByIntersectionUser(User user){
+    public Iterable<UserBudgetListIntersection> findAllByIntersectionUser(User user) {
         return userBudgetListIntersectionRepo.findAllByIntersectionUser(user);
     }
 
-    public Optional<UserBudgetListIntersection> findByIntersectionUserAndIntersectionBudgetList(User user, BudgetList budgetList){
+    public Optional<UserBudgetListIntersection> findByIntersectionUserAndIntersectionBudgetList(User user, BudgetList budgetList) {
         return userBudgetListIntersectionRepo.findByIntersectionUserAndIntersectionBudgetList(user, budgetList);
     }
 
-    public UserBudgetListIntersection save(User user, BudgetList budgetList){
+    public UserBudgetListIntersection save(User user, BudgetList budgetList) {
         UserBudgetListIntersection userBudgetListIntersection = new UserBudgetListIntersection();
         userBudgetListIntersection.setIntersectionBudgetList(budgetList);
         userBudgetListIntersection.setIntersectionUser(user);

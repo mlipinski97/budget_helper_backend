@@ -18,15 +18,23 @@ public class CategoryManager {
         this.categoryRepo = categoryRepo;
     }
 
-    public Iterable<Category> findAll(){
+    public Iterable<Category> findAll() {
         return categoryRepo.findAll();
     }
 
-    public Category add(Category category){
+    public Category add(Category category) {
         return categoryRepo.save(category);
     }
 
-    public Optional<Category> findByName(String categoryName){
+    public Optional<Category> findByName(String categoryName) {
         return categoryRepo.findById(categoryName);
+    }
+
+    public void editCategory(Category category) {
+        categoryRepo.save(category);
+    }
+
+    public void remove(Category category){
+        categoryRepo.delete(category);
     }
 }

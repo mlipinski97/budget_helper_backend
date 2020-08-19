@@ -17,17 +17,17 @@ public enum ERRORCODES {
     FRIENDSHIP_INTERSECTION_ALREADY_EXISTS_ERROR_CODE(512),
     FRIENDSHIP_INTERSECTION_DOES_NOT_EXISTS_ERROR_CODE(513),
     FRIENDSHIP_WITH_SELF_NOT_ALLOWED_ERROR_CODE(514),
-    CATEGORY_NOT_FOUND_ERROR_CODE(515);
+    CATEGORY_NOT_FOUND_ERROR_CODE(515),
+    IMAGE_EXTENSION_NOT_VALID_ERROR_CODE(516),
+    UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_CODE(517);
 
     private Integer value;
 
-    public Integer getValue()
-    {
+    public Integer getValue() {
         return this.value;
     }
 
-    ERRORCODES(Integer value)
-    {
+    ERRORCODES(Integer value) {
         this.value = value;
     }
 }

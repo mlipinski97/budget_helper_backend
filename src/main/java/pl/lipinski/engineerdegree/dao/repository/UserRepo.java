@@ -7,7 +7,8 @@ import pl.lipinski.engineerdegree.dao.entity.User;
 import java.util.Optional;
 
 @Repository
-public interface UserRepo extends JpaRepository<User, String>{
+public interface UserRepo extends JpaRepository<User, String> {
     Optional<User> findByUsername(String username);
+
     void deleteByUsername(String username);
 }
