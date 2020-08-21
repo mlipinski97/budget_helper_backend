@@ -82,7 +82,8 @@ public class CategoryController {
                     Collections.singletonList(CATEGORY_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        categoryToUpdate.get().setCategoryName(newCategoryName);
+        Category newCategory = new Category();
+        newCategory.setCategoryName(newCategoryName);
         if(categoryImage != null){
             String fileName = StringUtils.cleanPath(categoryImage.getName());
             if (fileName.contains("..")) {
@@ -92,7 +93,7 @@ public class CategoryController {
                 return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
             }
             try {
-                categoryToUpdate.get().setCategoryImage(categoryImage.getBytes());
+                newCategory.setCategoryImage(categoryImage.getBytes());
             } catch (IOException e) {
                 ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                         UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_CODE.getValue(),
@@ -100,8 +101,8 @@ public class CategoryController {
                 return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
             }
         }
-        categoryManager.editCategory(categoryToUpdate.get());
-        return ResponseEntity.ok(categoryToUpdate.get());
+        categoryManager.editCategory(categoryToUpdate.get(), newCategory);
+        return ResponseEntity.ok(newCategory);
     }
 
     @DeleteMapping("/delete")
