@@ -128,6 +128,7 @@ public class ExpenseContoller {
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         Optional<Category> category = categoryManager.findByName(categoryName);
+
         if (!category.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     CATEGORY_NOT_FOUND_ERROR_CODE.getValue(),

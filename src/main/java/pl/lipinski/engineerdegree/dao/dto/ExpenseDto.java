@@ -18,7 +18,9 @@ public class ExpenseDto {
     private LocalDate dateOfExpense;
 
     private User expenseOwner;
+
     private BudgetList budgetList;
+
     private Category category;
 
     public Category getCategory() {
