@@ -54,6 +54,7 @@ public class ExpenseContoller {
         this.categoryManager = categoryManager;
     }
 
+    @Transactional
     @GetMapping("/getall")
     public Iterable<Expense> getAll() {
         return expenseManager.findAll();
@@ -71,7 +72,7 @@ public class ExpenseContoller {
         expenseManager.deletebyId(id);
         return new ResponseEntity(HttpStatus.OK);
     }
-
+    @Transactional
     @DeleteMapping("/deletemany")
     public ResponseEntity deleteById(@RequestBody List<Long> idList) {
         for (Long id : idList) {
@@ -88,7 +89,7 @@ public class ExpenseContoller {
         }
         return new ResponseEntity(HttpStatus.OK);
     }
-
+    @Transactional
     @GetMapping("/getbyid")
     public ResponseEntity findById(@RequestParam Long id) {
         Expense expense = expenseManager.findById(id).orElseThrow(EntityNotFoundException::new);
@@ -101,6 +102,7 @@ public class ExpenseContoller {
         return ResponseEntity.ok(expense);
     }
 
+    @Transactional
     @GetMapping("/getallbybudgetlist")
     public Iterable<Expense> getAllByBudgetListId(@RequestParam Long id) {
         Optional<BudgetList> budgetList = budgetListManager.findById(id);
@@ -149,6 +151,7 @@ public class ExpenseContoller {
         return ResponseEntity.ok(modelMapper.map(expense, Expense.class));
     }
 
+    @Transactional
     @PatchMapping("/complete")
     public ResponseEntity changeToDone(@RequestParam Long id) {
         Optional<Expense> expense = expenseManager.findById(id);
@@ -169,6 +172,7 @@ public class ExpenseContoller {
         return ResponseEntity.ok(updatedExpense);
     }
 
+    @Transactional
     @PatchMapping("/undocomplete")
     public ResponseEntity changeToUndone(@RequestParam Long id) {
         Optional<Expense> expense = expenseManager.findById(id);
@@ -189,6 +193,7 @@ public class ExpenseContoller {
         return ResponseEntity.ok(updatedExpense);
     }
 
+    @Transactional
     @PatchMapping("/changedonestate")
     public ResponseEntity changeDoneState(@RequestParam Long id) {
         Optional<Expense> expense = expenseManager.findById(id);
@@ -214,6 +219,7 @@ public class ExpenseContoller {
     }
 
     //TODO change edit to acomodaate to adding category field
+    @Transactional
     @PatchMapping("/edit")
     public ResponseEntity edit(@RequestParam Long id,
                                @ModelAttribute("expenseform") ExpenseDto expenseDto,
