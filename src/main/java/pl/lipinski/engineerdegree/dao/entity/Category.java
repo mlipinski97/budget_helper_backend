@@ -1,19 +1,21 @@
 package pl.lipinski.engineerdegree.dao.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "categories")
 public class Category {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String categoryName;
 
     @Lob
     private byte[] categoryImage;
+
+    private boolean isDeleted;
 
     public Category() {
     }
@@ -21,6 +23,14 @@ public class Category {
     public Category(String categoryName, byte[] categoryImage) {
         this.categoryName = categoryName;
         this.categoryImage = categoryImage;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCategoryName() {
@@ -37,5 +47,13 @@ public class Category {
 
     public void setCategoryImage(byte[] categoryImage) {
         this.categoryImage = categoryImage;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

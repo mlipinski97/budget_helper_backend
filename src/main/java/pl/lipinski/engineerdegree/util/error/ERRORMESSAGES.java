@@ -18,7 +18,8 @@ public enum ERRORMESSAGES {
     FRIENDSHIP_WITH_SELF_NOT_ALLOWED_ERROR_MESSAGE("You can not befriend yourself, sadly... :("),
     CATEGORY_NOT_FOUND_ERROR_MESSAGE("Category not found!"),
     IMAGE_EXTENSION_NOT_VALID_ERROR_MESSAGE("Image extension not valid(check file name)"),
-    UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_MESSAGE("Unable to convert image to byte array");
+    UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_MESSAGE("Unable to convert image to byte array"),
+    CATEGORY_ALREADY_EXISTS_ERROR_MESSAGE("Category with that name already exists!");
 
     private String message;
 

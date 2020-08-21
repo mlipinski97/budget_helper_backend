@@ -30,12 +30,8 @@ public class CategoryManager {
         return categoryRepo.findById(categoryName);
     }
 
-    public void editCategory(Category oldCategory, Category newCategory) {
-        categoryRepo.delete(oldCategory);
-        categoryRepo.save(newCategory);
+    public void editCategory(Category Category) {
+        categoryRepo.save(Category);
     }
 
-    public void remove(Category category){
-        categoryRepo.delete(category);
-    }
 }

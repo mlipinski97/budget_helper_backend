@@ -48,6 +48,13 @@ public class CategoryController {
     @PostMapping("/add")
     public ResponseEntity<Category> addCategory(@RequestParam String categoryName,
                                                 @RequestPart(required = false) MultipartFile categoryImage) {
+        Optional<Category> possibleDuplicate = categoryManager.findByName(categoryName);
+        if(possibleDuplicate.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    CATEGORY_ALREADY_EXISTS_ERROR_CODE.getValue(),
+                    Collections.singletonList(CATEGORY_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
         Category category = new Category();
         category.setCategoryName(categoryName);
         if (categoryImage != null) {
@@ -75,6 +82,13 @@ public class CategoryController {
     public ResponseEntity edit(@RequestParam String oldCategoryName,
                                @RequestParam String newCategoryName,
                                @RequestPart(required = false) MultipartFile categoryImage) {
+        Optional<Category> possibleDuplicate = categoryManager.findByName(newCategoryName);
+        if(possibleDuplicate.isPresent()){
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    CATEGORY_ALREADY_EXISTS_ERROR_CODE.getValue(),
+                    Collections.singletonList(CATEGORY_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
         Optional<Category> categoryToUpdate = categoryManager.findByName(oldCategoryName);
         if (!categoryToUpdate.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -82,8 +96,7 @@ public class CategoryController {
                     Collections.singletonList(CATEGORY_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        Category newCategory = new Category();
-        newCategory.setCategoryName(newCategoryName);
+        categoryToUpdate.get().setCategoryName(newCategoryName);
         if(categoryImage != null){
             String fileName = StringUtils.cleanPath(categoryImage.getName());
             if (fileName.contains("..")) {
@@ -93,7 +106,7 @@ public class CategoryController {
                 return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
             }
             try {
-                newCategory.setCategoryImage(categoryImage.getBytes());
+                categoryToUpdate.get().setCategoryImage(categoryImage.getBytes());
             } catch (IOException e) {
                 ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                         UNABLE_TO_GET_BYTES_FROM_IMAGE_ERROR_CODE.getValue(),
@@ -101,20 +114,21 @@ public class CategoryController {
                 return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
             }
         }
-        categoryManager.editCategory(categoryToUpdate.get(), newCategory);
-        return ResponseEntity.ok(newCategory);
+        categoryManager.editCategory(categoryToUpdate.get());
+        return ResponseEntity.ok(categoryToUpdate.get());
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestParam String categoryName) {
-        categoryManager.findByName(categoryName).orElseThrow(EntityNotFoundException::new);
+        Category categoryToUpdate = categoryManager.findByName(categoryName).orElseThrow(EntityNotFoundException::new);
         if (!validatePermissions()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        categoryManager.remove(categoryManager.findByName(categoryName).get());
+        categoryToUpdate.setDeleted(true);
+        categoryManager.editCategory(categoryToUpdate);
         return new ResponseEntity(HttpStatus.OK);
     }
 
