@@ -17,6 +17,7 @@ import pl.lipinski.engineerdegree.util.error.ControllerError;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
@@ -129,6 +130,22 @@ public class CategoryController {
         }
         categoryToUpdate.setDeleted(true);
         categoryManager.editCategory(categoryToUpdate);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deletemany")
+    public ResponseEntity delete(@RequestBody List<String> nameList) {
+        for (String name : nameList) {
+            Category categoryToUpdate = categoryManager.findByName(name).orElseThrow(EntityNotFoundException::new);
+            if (!validatePermissions()) {
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                        Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
+            categoryToUpdate.setDeleted(true);
+            categoryManager.editCategory(categoryToUpdate);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
