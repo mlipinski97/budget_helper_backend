@@ -7,7 +7,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.Category;
 import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.manager.CategoryManager;
@@ -122,7 +121,7 @@ public class CategoryController {
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestParam String categoryName) {
         Category categoryToUpdate = categoryManager.findByName(categoryName).orElseThrow(EntityNotFoundException::new);
-        if (!validatePermissions()) {
+        if (!validateAdminPermissions()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
@@ -137,7 +136,7 @@ public class CategoryController {
     public ResponseEntity delete(@RequestBody List<String> nameList) {
         for (String name : nameList) {
             Category categoryToUpdate = categoryManager.findByName(name).orElseThrow(EntityNotFoundException::new);
-            if (!validatePermissions()) {
+            if (!validateAdminPermissions()) {
                 ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                         USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                         Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
@@ -149,7 +148,7 @@ public class CategoryController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    private boolean validatePermissions() {
+    private boolean validateAdminPermissions() {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userManager.findByUsername(name);
         if (!user.isPresent()) {
