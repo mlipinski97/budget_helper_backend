@@ -27,7 +27,7 @@ public class CategoryManager {
     }
 
     public Optional<Category> findByName(String categoryName) {
-        return categoryRepo.findById(categoryName);
+        return categoryRepo.findByCategoryName(categoryName);
     }
 
     public void editCategory(Category Category) {
