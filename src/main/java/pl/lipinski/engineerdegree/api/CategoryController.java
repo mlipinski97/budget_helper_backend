@@ -88,7 +88,7 @@ public class CategoryController {
                                @RequestParam String newCategoryName,
                                @RequestPart(required = false) MultipartFile categoryImage) {
         Optional<Category> possibleDuplicate = categoryManager.findByName(newCategoryName);
-        if(possibleDuplicate.isPresent()){
+        if(possibleDuplicate.isPresent() && !oldCategoryName.equals(newCategoryName)){
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     CATEGORY_ALREADY_EXISTS_ERROR_CODE.getValue(),
                     Collections.singletonList(CATEGORY_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
