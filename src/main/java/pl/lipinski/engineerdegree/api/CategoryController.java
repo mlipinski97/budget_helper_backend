@@ -14,6 +14,7 @@ import pl.lipinski.engineerdegree.manager.UserManager;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -35,16 +36,19 @@ public class CategoryController {
         this.categoryManager = categoryManager;
     }
 
+    @Transactional
     @GetMapping("/getall")
     public Iterable<Category> getAll() {
         return categoryManager.findAll();
     }
 
+    @Transactional
     @GetMapping("/getbyname")
     public Optional<Category> getByName(@RequestParam String categoryName) {
         return categoryManager.findByName(categoryName);
     }
 
+    @Transactional
     @PostMapping("/add")
     public ResponseEntity<Category> addCategory(@RequestParam String categoryName,
                                                 @RequestPart(required = false) MultipartFile categoryImage) {
@@ -78,6 +82,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryManager.add(category));
     }
 
+    @Transactional
     @PatchMapping("/edit")
     public ResponseEntity edit(@RequestParam String oldCategoryName,
                                @RequestParam String newCategoryName,
