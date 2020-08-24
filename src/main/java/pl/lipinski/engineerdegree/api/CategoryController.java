@@ -123,6 +123,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryToUpdate.get());
     }
 
+    @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity delete(@RequestParam String categoryName) {
         Category categoryToUpdate = categoryManager.findByName(categoryName).orElseThrow(EntityNotFoundException::new);
@@ -137,6 +138,7 @@ public class CategoryController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/deletemany")
     public ResponseEntity delete(@RequestBody List<String> nameList) {
         for (String name : nameList) {
