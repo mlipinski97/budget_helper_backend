@@ -212,7 +212,7 @@ public class BudgetListController {
     }
 
     @PatchMapping("/sharemany")
-    public ResponseEntity shareMany(@RequestBody ArrayList<String> usernameList, @RequestParam Long budgetListId) {
+    public ResponseEntity shareMany(@RequestBody List<String> usernameList, @RequestParam Long budgetListId) {
         Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
         if (!budgetList.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -288,7 +288,7 @@ public class BudgetListController {
     }
 
     @DeleteMapping("/revokemany")
-    public ResponseEntity revokeMany(@RequestBody ArrayList<String> usernameList, @RequestParam Long budgetListId) {
+    public ResponseEntity revokeMany(@RequestBody List<String> usernameList, @RequestParam Long budgetListId) {
         Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
         if (!budgetList.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
