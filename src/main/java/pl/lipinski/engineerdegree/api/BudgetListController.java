@@ -226,8 +226,8 @@ public class BudgetListController {
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        ArrayList<UserBudgetListIntersection> intersections = new ArrayList<>();
-        for(String username : usernameList){
+        ArrayList<User> users = new ArrayList<>();
+        for (String username : usernameList) {
             Optional<User> user = userManager.findByUsername(username);
             if (!user.isPresent()) {
                 ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -243,12 +243,12 @@ public class BudgetListController {
                         Collections.singletonList(BUDGET_LIST_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
                 return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
             }
-            intersections.add(intersection.get());
+            users.add(user.get());
         }
-        for(UserBudgetListIntersection intersection : intersections){
-            userBudgetListIntersectionManager.save(intersection.getIntersectionUser(), budgetList.get());
-        }
-        return ResponseEntity.ok(intersections);
+        users.forEach(user -> {
+            userBudgetListIntersectionManager.save(user, budgetList.get());
+        });
+        return ResponseEntity.ok(null);
     }
 
     @DeleteMapping("/revoke")
