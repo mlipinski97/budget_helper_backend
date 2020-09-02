@@ -52,31 +52,32 @@ public class BudgetListController {
     }
 
     @GetMapping("/getall")
-    public Iterable<BudgetList> getAll(){
+    public Iterable<BudgetList> getAll() {
         return budgetListManager.findAll();
     }
 
     @GetMapping("/getbyname")
-    public Iterable<BudgetList> getByName(@RequestParam String name){
+    public Iterable<BudgetList> getByName(@RequestParam String name) {
         List<BudgetList> result =
                 StreamSupport.stream(budgetListManager.findByName(name).spliterator(), false)
                         .collect(Collectors.toList());
         List<BudgetList> budgetListList = new ArrayList<>();
-        for (BudgetList bl : result){
-            if(validatePermissions(bl)){
-               budgetListList.add(bl);
+        for (BudgetList bl : result) {
+            if (validatePermissions(bl)) {
+                budgetListList.add(bl);
             }
         }
         return budgetListList;
     }
+
     @GetMapping("/getallbyuser")
-    public Iterable<BudgetList> getAllByUser(@RequestParam String username){
+    public Iterable<BudgetList> getAllByUser(@RequestParam String username) {
         List<BudgetList> result =
                 StreamSupport.stream(budgetListManager.findAllByUser(username).spliterator(), false)
                         .collect(Collectors.toList());
         List<BudgetList> budgetListList = new ArrayList<>();
-        for (BudgetList bl : result){
-            if(validatePermissions(bl)){
+        for (BudgetList bl : result) {
+            if (validatePermissions(bl)) {
                 budgetListList.add(bl);
             }
         }
@@ -84,9 +85,9 @@ public class BudgetListController {
     }
 
     @GetMapping("/getbyid")
-    public ResponseEntity<Optional<BudgetList>> getById(@RequestParam Long id){
+    public ResponseEntity<Optional<BudgetList>> getById(@RequestParam Long id) {
         budgetListManager.findById(id).orElseThrow(EntityNotFoundException::new);
-        if(!validatePermissions(budgetListManager.findById(id).get())){
+        if (!validatePermissions(budgetListManager.findById(id).get())) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
@@ -96,10 +97,10 @@ public class BudgetListController {
     }
 
 
-        @DeleteMapping("/delete")
-    public ResponseEntity deleteById(@RequestParam Long id){
+    @DeleteMapping("/delete")
+    public ResponseEntity deleteById(@RequestParam Long id) {
         budgetListManager.findById(id).orElseThrow(EntityNotFoundException::new);
-        if(!validatePermissions(budgetListManager.findById(id).get())){
+        if (!validatePermissions(budgetListManager.findById(id).get())) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
@@ -110,27 +111,27 @@ public class BudgetListController {
     }
 
     @DeleteMapping("/deletemany")
-    public ResponseEntity deleteManyById(@RequestBody ArrayList<Long> idList){
-        for(Long id : idList){
+    public ResponseEntity deleteManyById(@RequestBody ArrayList<Long> idList) {
+        for (Long id : idList) {
             budgetListManager.findById(id).orElseThrow(EntityNotFoundException::new);
-            if(!validatePermissions(budgetListManager.findById(id).get())){
+            if (!validatePermissions(budgetListManager.findById(id).get())) {
                 ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                         USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                         Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
                 return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
             }
         }
-        for(Long id : idList){
+        for (Long id : idList) {
             budgetListManager.deleteById(id);
         }
         return ResponseEntity.ok(null);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<BudgetList> addBudgetList(@ModelAttribute("budgetlistform")BudgetListDto budgetListDto,
-                                        BindingResult bindingResult){
+    public ResponseEntity<BudgetList> addBudgetList(@ModelAttribute("budgetlistform") BudgetListDto budgetListDto,
+                                                    BindingResult bindingResult) {
         budgetListValidator.validate(budgetListDto, bindingResult);
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     budgetListValidator.getErrorCode(),
                     budgetListValidator.getErrorMessages(bindingResult));
@@ -143,23 +144,23 @@ public class BudgetListController {
 
     @PatchMapping("/edit")
     public ResponseEntity<BudgetList> edit(@RequestParam Long id,
-                               @ModelAttribute("budgetlistform") BudgetListDto budgetListDto,
-                               BindingResult bindingResult) {
+                                           @ModelAttribute("budgetlistform") BudgetListDto budgetListDto,
+                                           BindingResult bindingResult) {
         Optional<BudgetList> budgetListToUpdate = budgetListManager.findById(id);
-        if(!budgetListToUpdate.isPresent()){
+        if (!budgetListToUpdate.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
                     Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        if(!validatePermissions(budgetListToUpdate.get())){
+        if (!validatePermissions(budgetListToUpdate.get())) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         budgetListValidator.validate(budgetListDto, bindingResult);
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     budgetListValidator.getErrorCode(),
                     budgetListValidator.getErrorMessages(bindingResult));
@@ -176,9 +177,9 @@ public class BudgetListController {
     }
 
     @PatchMapping("/share")
-    public ResponseEntity share(@RequestParam String username,@RequestParam Long budgetListId){
+    public ResponseEntity share(@RequestParam String username, @RequestParam Long budgetListId) {
         Optional<User> user = userManager.findByUsername(username);
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_NOT_FOUND_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
@@ -186,13 +187,13 @@ public class BudgetListController {
         }
         Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
 
-        if(!budgetList.isPresent()){
+        if (!budgetList.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
                     Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        if(!validatePermissions(budgetList.get())){
+        if (!validatePermissions(budgetList.get())) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
@@ -200,7 +201,7 @@ public class BudgetListController {
         }
         Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager
                 .findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
-        if(intersection.isPresent()){
+        if (intersection.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     BUDGET_LIST_INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
                     Collections.singletonList(BUDGET_LIST_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
@@ -210,10 +211,50 @@ public class BudgetListController {
         return ResponseEntity.ok(intersectionToReturn);
     }
 
+    @PatchMapping("/sharemany")
+    public ResponseEntity shareMany(@RequestBody ArrayList<String> usernameList, @RequestParam Long budgetListId) {
+        Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
+        if (!budgetList.isPresent()) {
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        if (!validatePermissions(budgetList.get())) {
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        ArrayList<UserBudgetListIntersection> intersections = new ArrayList<>();
+        for(String username : usernameList){
+            Optional<User> user = userManager.findByUsername(username);
+            if (!user.isPresent()) {
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        USER_NOT_FOUND_ERROR_CODE.getValue(),
+                        Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
+            Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager
+                    .findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
+            if (intersection.isPresent()) {
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        BUDGET_LIST_INTERSECTION_ALREADY_EXISTS_ERROR_CODE.getValue(),
+                        Collections.singletonList(BUDGET_LIST_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
+            intersections.add(intersection.get());
+        }
+        for(UserBudgetListIntersection intersection : intersections){
+            userBudgetListIntersectionManager.save(intersection.getIntersectionUser(), budgetList.get());
+        }
+        return ResponseEntity.ok(intersections);
+    }
+
     @DeleteMapping("/revoke")
-    public ResponseEntity revoke(@RequestParam String username, @RequestParam Long budgetListId){
+    public ResponseEntity revoke(@RequestParam String username, @RequestParam Long budgetListId) {
         Optional<User> user = userManager.findByUsername(username);
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_NOT_FOUND_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
@@ -221,13 +262,13 @@ public class BudgetListController {
         }
 
         Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
-        if(!budgetList.isPresent()){
+        if (!budgetList.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
                     Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        if(!validatePermissions(budgetList.get())){
+        if (!validatePermissions(budgetList.get())) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
@@ -235,7 +276,7 @@ public class BudgetListController {
         }
         Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager.
                 findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
-        if(!budgetList.isPresent()){
+        if (!intersection.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     INTERSECTION_NOT_FOUND_ERROR_CODE.getValue(),
                     Collections.singletonList(INTERSECTION_NOT_FOUND_ERROR_MESSAGE.getMessage()));
@@ -246,12 +287,52 @@ public class BudgetListController {
         return ResponseEntity.ok(0);
     }
 
+    @DeleteMapping("/revokemany")
+    public ResponseEntity revokeMany(@RequestBody ArrayList<String> usernameList, @RequestParam Long budgetListId) {
+        Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
+        if (!budgetList.isPresent()) {
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
+                    Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        if (!validatePermissions(budgetList.get())) {
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        ArrayList<UserBudgetListIntersection> intersections = new ArrayList<>();
+        for (String username : usernameList) {
+            Optional<User> user = userManager.findByUsername(username);
+            if (!user.isPresent()) {
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        USER_NOT_FOUND_ERROR_CODE.getValue(),
+                        Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
+            Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager.
+                    findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
+            if (!intersection.isPresent()) {
+                ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                        INTERSECTION_NOT_FOUND_ERROR_CODE.getValue(),
+                        Collections.singletonList(INTERSECTION_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            }
+            intersections.add(intersection.get());
+        }
 
+        for (UserBudgetListIntersection intersection : intersections) {
+            userBudgetListIntersectionManager.deleteById(intersection.getId());
+        }
 
-    private boolean validatePermissions(BudgetList budgetList){
+        return ResponseEntity.ok(null);
+    }
+
+    private boolean validatePermissions(BudgetList budgetList) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userManager.findByUsername(name);
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             return false;
         }
         return userBudgetListIntersectionManager.findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList)
