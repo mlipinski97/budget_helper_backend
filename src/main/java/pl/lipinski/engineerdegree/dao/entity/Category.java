@@ -13,7 +13,7 @@ public class Category {
 
     @NotNull
     private String categoryName;
-
+//TODO in theory 2 languages can be achived by creating new field and editing existing one to correspond to category name in that language. To be thought through
     @Lob
     private byte[] categoryImage;
 

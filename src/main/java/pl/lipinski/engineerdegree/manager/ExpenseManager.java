@@ -65,7 +65,8 @@ public class ExpenseManager {
         for (Expense e : expenses) {
             expensesSummary += e.getAmount();
         }
-        Double difference = budgetList.getBudgetValue() - expensesSummary;
+        double difference = budgetList.getBudgetValue() - expensesSummary;
+        difference = Math.floor(difference * 100) / 100;
         budgetList.setRemainingValue(difference);
         budgetListManager.editBudgetList(budgetList);
     }
