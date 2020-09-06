@@ -18,6 +18,8 @@ import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.BudgetListValidator;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -82,6 +84,22 @@ public class BudgetListController {
             }
         }
         return budgetListList;
+    }
+
+    @GetMapping("/getearliestdateforuser")
+    public String getEarliestForUser(@RequestParam String username){
+        List<BudgetList> result =
+                StreamSupport.stream(budgetListManager.findAllByUser(username).spliterator(), false)
+                        .sorted()
+                        .collect(Collectors.toList());
+        if(result.size() > 0){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            return result.get(0).getStartingDate().format(formatter);
+        } else {
+            LocalDate localDate = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            return localDate.format(formatter);
+        }
     }
 
     @GetMapping("/getbyid")
