@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.lipinski.engineerdegree.dao.dto.BudgetListDto;
+import pl.lipinski.engineerdegree.dao.dto.StringResponseDto;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
@@ -84,7 +85,7 @@ public class BudgetListController {
     }
 
     @GetMapping("/getearliestdateforuser")
-    public ResponseEntity<Map<String, String>> getEarliestForUser(@RequestParam String username){
+    public ResponseEntity<StringResponseDto> getEarliestForUser(@RequestParam String username){
         List<BudgetList> result =
                 StreamSupport.stream(budgetListManager.findAllByUser(username).spliterator(), false)
                         .sorted(Comparator.comparing(BudgetList::getStartingDate))
@@ -92,11 +93,11 @@ public class BudgetListController {
 
         if(result.size() > 0){
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            return ResponseEntity.ok(Collections.singletonMap("response", result.get(0).getStartingDate().format(formatter)));
+            return ResponseEntity.ok(new StringResponseDto(result.get(0).getStartingDate().format(formatter)));
         } else {
             LocalDate localDate = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            return ResponseEntity.ok(Collections.singletonMap("response", localDate.format(formatter)));
+            return ResponseEntity.ok(new StringResponseDto(localDate.format(formatter)));
         }
     }
 
