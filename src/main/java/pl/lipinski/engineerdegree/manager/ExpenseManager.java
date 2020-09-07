@@ -9,6 +9,10 @@ import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.dao.repository.ExpenseRepo;
 
 import javax.persistence.EntityNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -60,7 +64,15 @@ public class ExpenseManager {
     }
 
     public Iterable<Expense> findAllByDateAndExpenseOwner(String startDate, String endDate, String username){
-        return expenseRepo.findAllByDateAndExpenseOwner(startDate, endDate, username);
+        Date startDateObject = null;
+        Date endDateObject = null;
+        try {
+            startDateObject = new SimpleDateFormat("dd/MM/yyyy").parse(startDate);
+            endDateObject = new SimpleDateFormat("dd/MM/yyyy").parse(endDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return expenseRepo.findAllByDateAndExpenseOwner(startDateObject, endDateObject, username);
     }
 
     public void updateBudgetListRemainingValue(BudgetList budgetList) {

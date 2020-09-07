@@ -9,6 +9,7 @@ import pl.lipinski.engineerdegree.dao.entity.Expense;
 import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.dao.entity.intersection.FriendshipIntersection;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Repository
@@ -18,8 +19,8 @@ public interface ExpenseRepo extends JpaRepository<Expense, Long> {
 
     @Query("SELECT e FROM Expense e WHERE e.expenseOwner.username = :#{#userName} " +
             "AND e.dateOfExpense BETWEEN :#{#startDate} AND :#{#endDate}")
-    public Iterable<Expense> findAllByDateAndExpenseOwner(@Param("startDate") String startDate,
-                                                          @Param("endDate") String endDate,
+    public Iterable<Expense> findAllByDateAndExpenseOwner(@Param("startDate") Date startDate,
+                                                          @Param("endDate") Date endDate,
                                                           @Param("userName") String username);
 
 }
