@@ -59,6 +59,10 @@ public class ExpenseManager {
         return expenseToReturn;
     }
 
+    public Iterable<Expense> findAllByDateAndExpenseOwner(String startDate, String endDate, String username){
+        return expenseRepo.findAllByDateAndExpenseOwner(startDate, endDate, username);
+    }
+
     public void updateBudgetListRemainingValue(BudgetList budgetList) {
         Iterable<Expense> expenses = findAllByBudgetList(budgetList);
         double expensesSummary = 0;

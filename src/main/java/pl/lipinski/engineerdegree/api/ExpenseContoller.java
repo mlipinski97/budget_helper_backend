@@ -61,43 +61,43 @@ public class ExpenseContoller {
     }
 
     @DeleteMapping("/deletebyid")
-    public ResponseEntity deleteById(@RequestParam Long id) {
+    public ResponseEntity<?> deleteById(@RequestParam Long id) {
         expenseManager.findById(id).orElseThrow(EntityNotFoundException::new);
-        if (!validatePermissions(expenseManager.findById(id).get())) {
+        if (!validatePermissionsForExpense(expenseManager.findById(id).get())) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         expenseManager.deletebyId(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @Transactional
     @DeleteMapping("/deletemany")
-    public ResponseEntity deleteById(@RequestBody List<Long> idList) {
+    public ResponseEntity<?> deleteById(@RequestBody List<Long> idList) {
         for (Long id : idList) {
             expenseManager.findById(id).orElseThrow(EntityNotFoundException::new);
-            if (!validatePermissions(expenseManager.findById(id).get())) {
+            if (!validatePermissionsForExpense(expenseManager.findById(id).get())) {
                 ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                         USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                         Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
-                return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
             }
         }
         for (Long id : idList) {
             expenseManager.deletebyId(id);
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @Transactional
     @GetMapping("/getbyid")
-    public ResponseEntity findById(@RequestParam Long id) {
+    public ResponseEntity<?> findById(@RequestParam Long id) {
         Expense expense = expenseManager.findById(id).orElseThrow(EntityNotFoundException::new);
-        if (!validatePermissions(expense)) {
+        if (!validatePermissionsForExpense(expense)) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(expense);
     }
@@ -112,7 +112,7 @@ public class ExpenseContoller {
 
     @Transactional
     @PostMapping("/add")
-    public ResponseEntity save(@RequestParam Long budgetListId,
+    public ResponseEntity<?> save(@RequestParam Long budgetListId,
                                @RequestParam String categoryName,
                                @ModelAttribute("expenseform") ExpenseDto expenseDto,
                                BindingResult bindingResult) {
@@ -121,7 +121,7 @@ public class ExpenseContoller {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
                     Collections.singletonList(BUDGET_LIST_NOT_FOUND_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         expenseDto.setBudgetList(budgetList.get());
         expenseValidator.validate(expenseDto, bindingResult);
@@ -129,7 +129,7 @@ public class ExpenseContoller {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     expenseValidator.getErrorCode(),
                     expenseValidator.getErrorMessages(bindingResult));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         Optional<Category> category = categoryManager.findByName(categoryName);
 
@@ -137,15 +137,15 @@ public class ExpenseContoller {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     CATEGORY_NOT_FOUND_ERROR_CODE.getValue(),
                     Collections.singletonList(CATEGORY_NOT_FOUND_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         expenseDto.setCategory(category.get());
         Expense expense = modelMapper.map(expenseDto, Expense.class);
-        if (!validatePermissions(expense)) {
+        if (!validatePermissionsForExpense(expense)) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         expenseManager.addExpense(expense);
         return ResponseEntity.ok(modelMapper.map(expense, Expense.class));
@@ -153,19 +153,19 @@ public class ExpenseContoller {
 
     @Transactional
     @PatchMapping("/complete")
-    public ResponseEntity changeToDone(@RequestParam Long id) {
+    public ResponseEntity<?> changeToDone(@RequestParam Long id) {
         Optional<Expense> expense = expenseManager.findById(id);
         if (!expense.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     EXPENSE_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                    Collections.singletonList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
-        if (!validatePermissions(expense.get())) {
+        if (!validatePermissionsForExpense(expense.get())) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         expense.get().setDone(true);
         Expense updatedExpense = expenseManager.addExpense(expense.get());
@@ -174,19 +174,19 @@ public class ExpenseContoller {
 
     @Transactional
     @PatchMapping("/undocomplete")
-    public ResponseEntity changeToUndone(@RequestParam Long id) {
+    public ResponseEntity<?> changeToUndone(@RequestParam Long id) {
         Optional<Expense> expense = expenseManager.findById(id);
         if (!expense.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     EXPENSE_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                    Collections.singletonList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
-        if (!validatePermissions(expense.get())) {
+        if (!validatePermissionsForExpense(expense.get())) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         expense.get().setDone(false);
         Expense updatedExpense = expenseManager.addExpense(expense.get());
@@ -195,19 +195,19 @@ public class ExpenseContoller {
 
     @Transactional
     @PatchMapping("/changedonestate")
-    public ResponseEntity changeDoneState(@RequestParam Long id) {
+    public ResponseEntity<?> changeDoneState(@RequestParam Long id) {
         Optional<Expense> expense = expenseManager.findById(id);
         if (!expense.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     EXPENSE_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                    Collections.singletonList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
-        if (!validatePermissions(expense.get())) {
+        if (!validatePermissionsForExpense(expense.get())) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         if (expense.get().getDone()) {
             expense.get().setDone(false);
@@ -221,29 +221,29 @@ public class ExpenseContoller {
     //TODO change edit to acomodaate to adding category field
     @Transactional
     @PatchMapping("/edit")
-    public ResponseEntity edit(@RequestParam Long id,
+    public ResponseEntity<?> edit(@RequestParam Long id,
                                @ModelAttribute("expenseform") ExpenseDto expenseDto,
                                BindingResult bindingResult) {
         Optional<Expense> expenseToUpdate = expenseManager.findById(id);
         if (!expenseToUpdate.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     EXPENSE_NOT_FOUND_ERROR_CODE.getValue(),
-                    Arrays.asList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                    Collections.singletonList(EXPENSE_NOT_FOUND_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         expenseValidator.validate(expenseDto, bindingResult);
         if (bindingResult.hasErrors()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     expenseValidator.getErrorCode(),
                     expenseValidator.getErrorMessages(bindingResult));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         Expense expense = modelMapper.map(expenseDto, Expense.class);
-        if (!validatePermissions(expense)) {
+        if (!validatePermissionsForExpense(expense)) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
-                    Arrays.asList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
-            return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
         }
         expenseToUpdate.get().setAmount(expense.getAmount());
         expenseToUpdate.get().setDateOfExpense(expense.getDateOfExpense());
@@ -253,7 +253,30 @@ public class ExpenseContoller {
         return ResponseEntity.ok(expenseToUpdate.get());
     }
 
-    private boolean validatePermissions(Expense expense) {
+    @GetMapping("getmonthstatistics")
+    public ResponseEntity<?> getAllByDateAndExpenseOwner(@RequestParam String startDate,
+                                                         @RequestParam String endDate,
+                                                         @RequestParam String username){
+        if (!validatePermissionsForLoggedUser(username)) {
+            ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
+                    USER_DONT_HAVE_PERMISSIONS_ERROR_CODE.getValue(),
+                    Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
+            return new ResponseEntity<>(controllerError, HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(expenseManager.findAllByDateAndExpenseOwner(startDate, endDate, username));
+    }
+
+    private boolean validatePermissionsForLoggedUser(String username){
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userManager.findByUsername(name);
+        if (!user.isPresent()) {
+            return false;
+        }
+        return SecurityContextHolder.getContext().getAuthentication().getName().equals(username)
+                || user.get().getRoles().equals("ROLE_ADMIN");
+    }
+
+    private boolean validatePermissionsForExpense(Expense expense) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userManager.findByUsername(name);
         if (!user.isPresent()) {

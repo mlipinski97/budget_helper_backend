@@ -7,6 +7,7 @@ import pl.lipinski.engineerdegree.dao.entity.Category;
 import pl.lipinski.engineerdegree.dao.entity.User;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 public class ExpenseDto {
@@ -15,7 +16,7 @@ public class ExpenseDto {
     private String name;
     private Double amount;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private LocalDate dateOfExpense;
+    private Date dateOfExpense;
 
     private User expenseOwner;
 
@@ -41,11 +42,11 @@ public class ExpenseDto {
 
     private Boolean isDone;
 
-    public LocalDate getDateOfExpense() {
+    public Date getDateOfExpense() {
         return dateOfExpense;
     }
 
-    public void setDateOfExpense(LocalDate dateOfExpense) {
+    public void setDateOfExpense(Date dateOfExpense) {
         this.dateOfExpense = dateOfExpense;
     }
 }

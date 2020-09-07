@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "expenses")
@@ -22,7 +23,7 @@ public class Expense {
     private String name;
 
     @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private LocalDate dateOfExpense;
+    private Date dateOfExpense;
 
     @ManyToOne
     @NotNull
@@ -56,11 +57,11 @@ public class Expense {
         this.amount = amount;
     }
 
-    public LocalDate getDateOfExpense() {
+    public Date getDateOfExpense() {
         return dateOfExpense;
     }
 
-    public void setDateOfExpense(LocalDate dateOfExpense) {
+    public void setDateOfExpense(Date dateOfExpense) {
         this.dateOfExpense = dateOfExpense;
     }
 
