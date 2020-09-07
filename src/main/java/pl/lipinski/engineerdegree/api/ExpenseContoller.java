@@ -252,7 +252,7 @@ public class ExpenseContoller {
         expenseManager.addExpense(expenseToUpdate.get());
         return ResponseEntity.ok(expenseToUpdate.get());
     }
-
+    @Transactional
     @GetMapping("/getmonthstatistics")
     public ResponseEntity<?> getAllByDateAndExpenseOwner(@RequestParam String startDate,
                                                          @RequestParam String endDate,
