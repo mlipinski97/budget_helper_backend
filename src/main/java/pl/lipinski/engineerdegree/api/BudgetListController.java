@@ -84,18 +84,18 @@ public class BudgetListController {
     }
 
     @GetMapping("/getearliestdateforuser")
-    public String getEarliestForUser(@RequestParam String username){
+    public ResponseEntity<String> getEarliestForUser(@RequestParam String username){
         List<BudgetList> result =
                 StreamSupport.stream(budgetListManager.findAllByUser(username).spliterator(), false)
                         .sorted(Comparator.comparing(BudgetList::getStartingDate))
                         .collect(Collectors.toList());
         if(result.size() > 0){
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            return result.get(0).getStartingDate().format(formatter);
+            return ResponseEntity.ok(result.get(0).getStartingDate().format(formatter));
         } else {
             LocalDate localDate = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            return localDate.format(formatter);
+            return ResponseEntity.ok(localDate.format(formatter));
         }
     }
 
