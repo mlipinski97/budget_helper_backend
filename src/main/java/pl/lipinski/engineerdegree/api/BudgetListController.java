@@ -20,10 +20,7 @@ import pl.lipinski.engineerdegree.util.validator.BudgetListValidator;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -90,7 +87,7 @@ public class BudgetListController {
     public String getEarliestForUser(@RequestParam String username){
         List<BudgetList> result =
                 StreamSupport.stream(budgetListManager.findAllByUser(username).spliterator(), false)
-                        .sorted()
+                        .sorted(Comparator.comparing(BudgetList::getStartingDate))
                         .collect(Collectors.toList());
         if(result.size() > 0){
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
