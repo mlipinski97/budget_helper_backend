@@ -67,8 +67,8 @@ public class ExpenseManager {
         Date startDateObject = null;
         Date endDateObject = null;
         try {
-            startDateObject = new SimpleDateFormat("dd/MM/yyyy").parse(startDate);
-            endDateObject = new SimpleDateFormat("dd/MM/yyyy").parse(endDate);
+            startDateObject = new SimpleDateFormat("dd-MM-yyyy").parse(startDate);
+            endDateObject = new SimpleDateFormat("dd-MM-yyyy").parse(endDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
