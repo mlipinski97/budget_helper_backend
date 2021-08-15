@@ -5,25 +5,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.*;
 import pl.lipinski.engineerdegree.dao.entity.User;
-import pl.lipinski.engineerdegree.manager.UserManager;
+import pl.lipinski.engineerdegree.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
-import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.PASSWORDS_DOESNT_MATCH_ERROR_MESSAGE;
-import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.USERNAME_TAKEN_ERROR_MESSAGE;
+import static pl.lipinski.engineerdegree.util.error.ErrorCodes.*;
+import static pl.lipinski.engineerdegree.util.error.ErrorMessages.PASSWORDS_DOESNT_MATCH_ERROR_MESSAGE;
+import static pl.lipinski.engineerdegree.util.error.ErrorMessages.USERNAME_TAKEN_ERROR_MESSAGE;
 
 @Component
 public class UserRegistrationValidator implements Validator {
 
     private int errorCode;
-    private final UserManager userManager;
+    private final UserService userService;
     protected final ModelMapper modelMapper;
 
     @Autowired
-    public UserRegistrationValidator(UserManager userManager) {
-        this.userManager = userManager;
+    public UserRegistrationValidator(UserService userService) {
+        this.userService = userService;
         this.modelMapper = new ModelMapper();
     }
 
@@ -52,7 +52,7 @@ public class UserRegistrationValidator implements Validator {
             errors.rejectValue("password", PASSWORDS_DOESNT_MATCH_ERROR_MESSAGE.getMessage());
             return;
         }
-        if (userManager.findByUsername(user.getUsername()).isPresent()) {
+        if (userService.findByUsername(user.getUsername()).isPresent()) {
             errorCode = USERNAME_TAKEN_ERROR_CODE.getValue();
             errors.rejectValue("username", USERNAME_TAKEN_ERROR_MESSAGE.getMessage());
             return;

@@ -13,43 +13,42 @@ import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.Category;
 import pl.lipinski.engineerdegree.dao.entity.Expense;
 import pl.lipinski.engineerdegree.dao.entity.User;
-import pl.lipinski.engineerdegree.manager.*;
+import pl.lipinski.engineerdegree.service.*;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.ExpenseValidator;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
-import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.*;
+import static pl.lipinski.engineerdegree.util.error.ErrorCodes.*;
+import static pl.lipinski.engineerdegree.util.error.ErrorMessages.*;
 
 @RestController
 @RequestMapping("/api/expenses")
 public class ExpenseContoller {
 
-    private ExpenseManager expenseManager;
-    private ModelMapper modelMapper;
-    private ExpenseValidator expenseValidator;
-    private BudgetListManager budgetListManager;
-    private UserManager userManager;
-    private CategoryManager categoryManager;
-    private UserBudgetListIntersectionManager intersectionManager;
+    private final ExpenseManager expenseManager;
+    private final ModelMapper modelMapper;
+    private final ExpenseValidator expenseValidator;
+    private final BudgetListService budgetListService;
+    private final UserService userService;
+    private final CategoryManager categoryManager;
+    private final UserBudgetListIntersectionManager intersectionManager;
 
     @Autowired
     public ExpenseContoller(ExpenseManager expenseManager,
                             ExpenseValidator expenseValidator,
-                            BudgetListManager budgetListManage,
-                            UserManager userManager,
+                            BudgetListService budgetListManage,
+                            UserService userService,
                             UserBudgetListIntersectionManager intersectionManager,
                             CategoryManager categoryManager) {
         this.expenseManager = expenseManager;
         this.modelMapper = new ModelMapper();
         this.expenseValidator = expenseValidator;
-        this.budgetListManager = budgetListManage;
-        this.userManager = userManager;
+        this.budgetListService = budgetListManage;
+        this.userService = userService;
         this.intersectionManager = intersectionManager;
         this.categoryManager = categoryManager;
     }
@@ -105,7 +104,7 @@ public class ExpenseContoller {
     @Transactional
     @GetMapping("/getallbybudgetlist")
     public Iterable<Expense> getAllByBudgetListId(@RequestParam Long id) {
-        Optional<BudgetList> budgetList = budgetListManager.findById(id);
+        Optional<BudgetList> budgetList = budgetListService.findById(id);
         budgetList.orElseThrow(EntityNotFoundException::new);
         return expenseManager.findAllByBudgetList(budgetList.get());
     }
@@ -116,7 +115,7 @@ public class ExpenseContoller {
                                @RequestParam String categoryName,
                                @ModelAttribute("expenseform") ExpenseDto expenseDto,
                                BindingResult bindingResult) {
-        Optional<BudgetList> budgetList = budgetListManager.findById(budgetListId);
+        Optional<BudgetList> budgetList = budgetListService.findById(budgetListId);
         if (!budgetList.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
                     BUDGET_LIST_NOT_FOUND_ERROR_CODE.getValue(),
@@ -218,7 +217,7 @@ public class ExpenseContoller {
         return ResponseEntity.ok(updatedExpense);
     }
 
-    //TODO change edit to acomodaate to adding category field
+    //TODO change edit to accommodate to adding category field
     @Transactional
     @PatchMapping("/edit")
     public ResponseEntity<?> edit(@RequestParam Long id,
@@ -268,7 +267,7 @@ public class ExpenseContoller {
 
     private boolean validatePermissionsForLoggedUser(String username){
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = userManager.findByUsername(name);
+        Optional<User> user = userService.findByUsername(name);
         if (!user.isPresent()) {
             return false;
         }
@@ -278,7 +277,7 @@ public class ExpenseContoller {
 
     private boolean validatePermissionsForExpense(Expense expense) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = userManager.findByUsername(name);
+        Optional<User> user = userService.findByUsername(name);
         if (!user.isPresent()) {
             return false;
         }

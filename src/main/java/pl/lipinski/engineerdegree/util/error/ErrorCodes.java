@@ -1,6 +1,6 @@
 package pl.lipinski.engineerdegree.util.error;
 
-public enum ERRORCODES {
+public enum ErrorCodes {
 
     EMPTY_VALUE_ERROR_CODE(500),
     PASSWORDS_DOESNT_MATCH_ERROR_CODE(501),
@@ -28,7 +28,7 @@ public enum ERRORCODES {
         return this.value;
     }
 
-    ERRORCODES(Integer value) {
+    ErrorCodes(Integer value) {
         this.value = value;
     }
 }

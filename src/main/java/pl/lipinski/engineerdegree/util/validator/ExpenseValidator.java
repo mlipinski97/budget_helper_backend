@@ -9,9 +9,9 @@ import pl.lipinski.engineerdegree.dao.entity.Expense;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.lipinski.engineerdegree.util.error.ERRORCODES.EMPTY_VALUE_ERROR_CODE;
-import static pl.lipinski.engineerdegree.util.error.ERRORCODES.WRONG_EXPENSE_VALUE_ERROR_CODE;
-import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.WRONG_EXPENSE_VALUE_ERROR_MESSAGE;
+import static pl.lipinski.engineerdegree.util.error.ErrorCodes.EMPTY_VALUE_ERROR_CODE;
+import static pl.lipinski.engineerdegree.util.error.ErrorCodes.WRONG_EXPENSE_VALUE_ERROR_CODE;
+import static pl.lipinski.engineerdegree.util.error.ErrorMessages.WRONG_EXPENSE_VALUE_ERROR_MESSAGE;
 
 @Component
 public class ExpenseValidator implements Validator {
@@ -32,7 +32,7 @@ public class ExpenseValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "Expense name is empty!");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "expense name is empty!");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "amount", "amount is empty!");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dateOfExpense", "dateOfExpense is empty!");
 

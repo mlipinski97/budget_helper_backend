@@ -12,7 +12,6 @@ import java.util.Set;
 @Table(name = "budget_lists")
 public class BudgetList {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

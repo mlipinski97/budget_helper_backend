@@ -6,7 +6,6 @@ import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.Category;
 import pl.lipinski.engineerdegree.dao.entity.User;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Data

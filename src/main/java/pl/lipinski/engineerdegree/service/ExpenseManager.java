@@ -1,4 +1,4 @@
-package pl.lipinski.engineerdegree.manager;
+package pl.lipinski.engineerdegree.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +11,6 @@ import pl.lipinski.engineerdegree.dao.repository.ExpenseRepo;
 import javax.persistence.EntityNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -20,14 +19,14 @@ import java.util.Optional;
 public class ExpenseManager {
 
     private final ExpenseRepo expenseRepo;
-    private final UserManager userManager;
-    private final BudgetListManager budgetListManager;
+    private final UserService userService;
+    private final BudgetListService budgetListService;
 
     @Autowired
-    public ExpenseManager(ExpenseRepo expenseRepo, UserManager userManager, BudgetListManager budgetListManager) {
+    public ExpenseManager(ExpenseRepo expenseRepo, UserService userService, BudgetListService budgetListService) {
         this.expenseRepo = expenseRepo;
-        this.userManager = userManager;
-        this.budgetListManager = budgetListManager;
+        this.userService = userService;
+        this.budgetListService = budgetListService;
     }
 
     public Iterable<Expense> findAll() {
@@ -52,7 +51,7 @@ public class ExpenseManager {
 
     public Expense addExpense(Expense expense) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = userManager.findByUsername(name);
+        Optional<User> user = userService.findByUsername(name);
         user.orElseThrow(NoSuchElementException::new);
         expense.setExpenseOwner(user.get());
         if (expense.getDone() == null) {
@@ -84,6 +83,6 @@ public class ExpenseManager {
         double difference = budgetList.getBudgetValue() - expensesSummary;
         difference = Math.floor(difference * 100) / 100;
         budgetList.setRemainingValue(difference);
-        budgetListManager.editBudgetList(budgetList);
+        budgetListService.editBudgetList(budgetList);
     }
 }

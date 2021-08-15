@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.lipinski.engineerdegree.dao.entity.Category;
 import pl.lipinski.engineerdegree.dao.entity.User;
-import pl.lipinski.engineerdegree.manager.CategoryManager;
-import pl.lipinski.engineerdegree.manager.UserManager;
+import pl.lipinski.engineerdegree.service.CategoryManager;
+import pl.lipinski.engineerdegree.service.UserService;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 
 import javax.persistence.EntityNotFoundException;
@@ -20,19 +20,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static pl.lipinski.engineerdegree.util.error.ERRORCODES.*;
-import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.*;
+import static pl.lipinski.engineerdegree.util.error.ErrorCodes.*;
+import static pl.lipinski.engineerdegree.util.error.ErrorMessages.*;
 
 @RestController
 @RequestMapping("/api/category")
 public class CategoryController {
 
     CategoryManager categoryManager;
-    UserManager userManager;
+    UserService userService;
 
     @Autowired
-    public CategoryController(CategoryManager categoryManager, UserManager userManager) {
-        this.userManager = userManager;
+    public CategoryController(CategoryManager categoryManager, UserService userService) {
+        this.userService = userService;
         this.categoryManager = categoryManager;
     }
 
@@ -157,7 +157,7 @@ public class CategoryController {
 
     private boolean validateAdminPermissions() {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = userManager.findByUsername(name);
+        Optional<User> user = userService.findByUsername(name);
         if (!user.isPresent()) {
             return false;
         }

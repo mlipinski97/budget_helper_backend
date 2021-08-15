@@ -1,4 +1,4 @@
-package pl.lipinski.engineerdegree.manager;
+package pl.lipinski.engineerdegree.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
