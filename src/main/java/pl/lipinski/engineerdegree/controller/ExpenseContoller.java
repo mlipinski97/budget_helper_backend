@@ -1,4 +1,4 @@
-package pl.lipinski.engineerdegree.api;
+package pl.lipinski.engineerdegree.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;

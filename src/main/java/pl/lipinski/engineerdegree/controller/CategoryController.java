@@ -1,4 +1,4 @@
-package pl.lipinski.engineerdegree.api;
+package pl.lipinski.engineerdegree.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
