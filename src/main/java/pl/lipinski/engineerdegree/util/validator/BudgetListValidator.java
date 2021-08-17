@@ -9,9 +9,9 @@ import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.lipinski.engineerdegree.util.error.ERRORCODES.EMPTY_VALUE_ERROR_CODE;
-import static pl.lipinski.engineerdegree.util.error.ERRORCODES.WRONG_BUDGET_VALUE_ERROR_CODE;
-import static pl.lipinski.engineerdegree.util.error.ERRORMESSAGES.WRONG_BUDGET_VALUE_ERROR_MESSAGE;
+import static pl.lipinski.engineerdegree.util.error.ErrorCodes.EMPTY_VALUE_ERROR_CODE;
+import static pl.lipinski.engineerdegree.util.error.ErrorCodes.WRONG_BUDGET_VALUE_ERROR_CODE;
+import static pl.lipinski.engineerdegree.util.error.ErrorMessages.WRONG_BUDGET_VALUE_ERROR_MESSAGE;
 
 @Component
 public class BudgetListValidator implements Validator {

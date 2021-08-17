@@ -1,6 +1,6 @@
 package pl.lipinski.engineerdegree.util.error;
 
-public enum ERRORMESSAGES {
+public enum ErrorMessages {
 
     WRONG_BUDGET_VALUE_ERROR_MESSAGE("Budget value can not be negative value or zero!"),
     WRONG_EXPENSE_VALUE_ERROR_MESSAGE("Expense amount can not be negative value or zero!"),
@@ -28,7 +28,7 @@ public enum ERRORMESSAGES {
         return this.message;
     }
 
-    ERRORMESSAGES(String message)
+    ErrorMessages(String message)
     {
         this.message = message;
     }

@@ -17,9 +17,8 @@ import pl.lipinski.engineerdegree.security.auth.ApplicationUserService;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
-    private ApplicationUserService userDetailsService;
+    private final ApplicationUserService userDetailsService;
 
-    @Autowired
     public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, ApplicationUserService userDetailsService) {
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
