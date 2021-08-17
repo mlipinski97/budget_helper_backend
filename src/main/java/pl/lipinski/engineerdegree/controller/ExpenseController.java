@@ -1,4 +1,4 @@
-package pl.lipinski.engineerdegree.api;
+package pl.lipinski.engineerdegree.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/expenses")
-public class ExpenseContoller {
+public class ExpenseController {
 
     private final ExpenseService expenseService;
 
-    public ExpenseContoller(ExpenseService expenseService) {
+    public ExpenseController(ExpenseService expenseService) {
         this.expenseService = expenseService;
     }
 

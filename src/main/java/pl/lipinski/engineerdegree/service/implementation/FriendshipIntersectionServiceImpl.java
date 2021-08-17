@@ -61,7 +61,7 @@ public class FriendshipIntersectionServiceImpl implements FriendshipIntersection
         return ResponseEntity.ok(friendshipIntersectionRepo.findByUsers(requester.get(), friend.get()));
     }
 
-    public ResponseEntity<?> saveFriendshipIntersection(String friendUsername){
+    public ResponseEntity<?> saveFriendshipIntersection(String friendUsername) {
         Optional<User> friend = userService.findByUsername(friendUsername);
         if (!friend.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -93,7 +93,7 @@ public class FriendshipIntersectionServiceImpl implements FriendshipIntersection
         return ResponseEntity.ok(save(requester.get(), friend.get()));
     }
 
-    public ResponseEntity<?> deleteFriendship(String friendUsername){
+    public ResponseEntity<?> deleteFriendship(String friendUsername) {
         Optional<User> friend = userService.findByUsername(friendUsername);
         if (!friend.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -120,7 +120,7 @@ public class FriendshipIntersectionServiceImpl implements FriendshipIntersection
         return ResponseEntity.ok(0);
     }
 
-    public ResponseEntity<?> removeFriendships(List<String> friendsUsernames){
+    public ResponseEntity<?> removeFriendships(List<String> friendsUsernames) {
         ArrayList<FriendshipIntersection> intersections = new ArrayList<>();
         String requesterName = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> requester = userService.findByUsername(requesterName);
@@ -151,7 +151,7 @@ public class FriendshipIntersectionServiceImpl implements FriendshipIntersection
         return ResponseEntity.ok(0);
     }
 
-    public ResponseEntity<?> acceptFriendship(String requesterUsername){
+    public ResponseEntity<?> acceptFriendship(String requesterUsername) {
         Optional<User> requester = userService.findByUsername(requesterUsername);
         if (!requester.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,

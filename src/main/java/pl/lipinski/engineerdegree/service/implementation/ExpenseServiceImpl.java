@@ -109,9 +109,9 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     public ResponseEntity<?> addExpense(Long budgetListId,
-                                  String categoryName,
-                                  ExpenseDto expenseDto,
-                                  BindingResult bindingResult) {
+                                        String categoryName,
+                                        ExpenseDto expenseDto,
+                                        BindingResult bindingResult) {
         Optional<BudgetList> budgetList = budgetListRepo.findById(budgetListId);
         if (!budgetList.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -306,8 +306,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
 
-
-    private boolean validatePermissionsForLoggedUser(String username){
+    private boolean validatePermissionsForLoggedUser(String username) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userService.findByUsername(name);
         if (!user.isPresent()) {
