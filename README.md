@@ -66,4 +66,4 @@ List of endpoints is available after building project at swagger default local U
 
 Used Java Spring with lombok for easier data managment.
 Data storage is handled by postgreSQL 12.2. '
-Server runs on Heroku.
+Server runs on Heroku. 
