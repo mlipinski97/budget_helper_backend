@@ -1,4 +1,4 @@
-package pl.lipinski.engineerdegree.service;
+package pl.lipinski.engineerdegree.service.implementation;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.dao.entity.intersection.FriendshipIntersection;
 import pl.lipinski.engineerdegree.dao.repository.FriendshipIntersectionRepo;
+import pl.lipinski.engineerdegree.service.FriendshipIntersectionService;
+import pl.lipinski.engineerdegree.service.UserService;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import static pl.lipinski.engineerdegree.util.error.ErrorCodes.*;
 import static pl.lipinski.engineerdegree.util.error.ErrorMessages.*;
 
 @Service
-public class FriendshipIntersectionServiceImpl implements FriendshipIntersectionService{
+public class FriendshipIntersectionServiceImpl implements FriendshipIntersectionService {
 
     private final FriendshipIntersectionRepo friendshipIntersectionRepo;
     private final UserService userService;

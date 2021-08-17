@@ -15,22 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 class EngineerdegreeApplicationTests {
 
-    @Autowired
-    private UserService entityManager;
-
-    @Autowired
-    private UserRepo userRepo;
-
     @Test
-    public void whenFindByName_thenReturnEmployee() {
-        // given
-        User alex = new User();
-        alex.setUsername("user");
-        // when
-        User found = userRepo.findByUsername(alex.getUsername()).get();
-
-        // then
-        assertEquals(found.getUsername(),alex.getUsername());
+    void contextLoads() {
     }
 
 }

@@ -1,7 +1,8 @@
-package pl.lipinski.engineerdegree.service;
+package pl.lipinski.engineerdegree.service.implementation;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestParam;
 import pl.lipinski.engineerdegree.dao.dto.UserDetailsDto;
 import pl.lipinski.engineerdegree.dao.dto.UserRegistrationDto;
 import pl.lipinski.engineerdegree.dao.entity.BudgetList;
@@ -17,6 +17,8 @@ import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 import pl.lipinski.engineerdegree.dao.repository.BudgetListRepo;
 import pl.lipinski.engineerdegree.dao.repository.UserRepo;
+import pl.lipinski.engineerdegree.service.UserBudgetListIntersectionService;
+import pl.lipinski.engineerdegree.service.UserService;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.UserRegistrationValidator;
 
@@ -36,16 +38,18 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
     private final UserRegistrationValidator userRegistrationValidator;
     private final BudgetListRepo budgetListRepo;
-    private final UserBudgetListIntersectionManager userBudgetListIntersectionManager;
+    private final UserBudgetListIntersectionService userBudgetListIntersectionService;
 
     public UserServiceImpl(UserRepo userRepo,
                            PasswordEncoder passwordEncoder,
-                           UserRegistrationValidator userRegistrationValidator, BudgetListRepo budgetListRepo, UserBudgetListIntersectionManager userBudgetListIntersectionManager) {
+                           @Lazy UserRegistrationValidator userRegistrationValidator,
+                           BudgetListRepo budgetListRepo,
+                           UserBudgetListIntersectionService userBudgetListIntersectionService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.userRegistrationValidator = userRegistrationValidator;
         this.budgetListRepo = budgetListRepo;
-        this.userBudgetListIntersectionManager = userBudgetListIntersectionManager;
+        this.userBudgetListIntersectionService = userBudgetListIntersectionService;
         this.modelMapper = new ModelMapper();
     }
 
@@ -95,7 +99,7 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(modelMapper.map(admin, UserDetailsDto.class));
     }
 
-    public UserDetailsDto account(){
+    public UserDetailsDto account() {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = findByUsername(name);
         user.orElseThrow(NoSuchElementException::new);
@@ -111,7 +115,7 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
         ArrayList<UserDetailsDto> users = new ArrayList<>();
-        for (UserBudgetListIntersection ubli : userBudgetListIntersectionManager
+        for (UserBudgetListIntersection ubli : userBudgetListIntersectionService
                 .findAllByIntersectionBudgetList(searchedBudgetList.get())) {
             users.add(modelMapper.map(ubli.getIntersectionUser(), UserDetailsDto.class));
         }

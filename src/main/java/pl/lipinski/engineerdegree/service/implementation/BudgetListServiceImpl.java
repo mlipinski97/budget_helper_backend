@@ -1,4 +1,4 @@
-package pl.lipinski.engineerdegree.service;
+package pl.lipinski.engineerdegree.service.implementation;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,9 @@ import pl.lipinski.engineerdegree.dao.entity.BudgetList;
 import pl.lipinski.engineerdegree.dao.entity.User;
 import pl.lipinski.engineerdegree.dao.entity.intersection.UserBudgetListIntersection;
 import pl.lipinski.engineerdegree.dao.repository.BudgetListRepo;
+import pl.lipinski.engineerdegree.service.BudgetListService;
+import pl.lipinski.engineerdegree.service.UserBudgetListIntersectionService;
+import pl.lipinski.engineerdegree.service.UserService;
 import pl.lipinski.engineerdegree.util.error.ControllerError;
 import pl.lipinski.engineerdegree.util.validator.BudgetListValidator;
 
@@ -33,19 +36,19 @@ public class BudgetListServiceImpl implements BudgetListService {
     private final UserService userService;
     private final BudgetListValidator budgetListValidator;
     private final ModelMapper modelMapper;
-    private final UserBudgetListIntersectionManager intersectionManager;
-    private final UserBudgetListIntersectionManager userBudgetListIntersectionManager;
+    private final UserBudgetListIntersectionService intersectionManager;
+    private final UserBudgetListIntersectionService userBudgetListIntersectionService;
 
     @Autowired
     public BudgetListServiceImpl(BudgetListRepo budgetListRepo,
                                  UserService userService,
-                                 BudgetListValidator budgetListValidator, UserBudgetListIntersectionManager intersectionManager,
-                                 UserBudgetListIntersectionManager userBudgetListIntersectionManager) {
+                                 BudgetListValidator budgetListValidator, UserBudgetListIntersectionService intersectionManager,
+                                 UserBudgetListIntersectionService userBudgetListIntersectionService) {
         this.budgetListRepo = budgetListRepo;
         this.userService = userService;
         this.budgetListValidator = budgetListValidator;
         this.intersectionManager = intersectionManager;
-        this.userBudgetListIntersectionManager = userBudgetListIntersectionManager;
+        this.userBudgetListIntersectionService = userBudgetListIntersectionService;
         this.modelMapper = new ModelMapper();
     }
 
@@ -213,7 +216,7 @@ public class BudgetListServiceImpl implements BudgetListService {
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager
+        Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionService
                 .findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
         if (intersection.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -221,7 +224,7 @@ public class BudgetListServiceImpl implements BudgetListService {
                     Collections.singletonList(BUDGET_LIST_INTERSECTION_ALREADY_EXISTS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        UserBudgetListIntersection intersectionToReturn = userBudgetListIntersectionManager.save(user.get(), budgetList.get());
+        UserBudgetListIntersection intersectionToReturn = userBudgetListIntersectionService.save(user.get(), budgetList.get());
         return ResponseEntity.ok(intersectionToReturn);
     }
 
@@ -248,7 +251,7 @@ public class BudgetListServiceImpl implements BudgetListService {
                         Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
                 return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
             }
-            Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager
+            Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionService
                     .findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
             if (intersection.isPresent()) {
                 ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -258,7 +261,7 @@ public class BudgetListServiceImpl implements BudgetListService {
             }
             users.add(user.get());
         }
-        users.forEach(user -> userBudgetListIntersectionManager.save(user, budgetList.get()));
+        users.forEach(user -> userBudgetListIntersectionService.save(user, budgetList.get()));
         return ResponseEntity.ok(null);
     }
 
@@ -284,7 +287,7 @@ public class BudgetListServiceImpl implements BudgetListService {
                     Collections.singletonList(USER_DONT_HAVE_PERMISSIONS_ERROR_MESSAGE.getMessage()));
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
-        Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager.
+        Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionService.
                 findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
         if (!intersection.isPresent()) {
             ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -293,7 +296,7 @@ public class BudgetListServiceImpl implements BudgetListService {
             return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
         }
 
-        userBudgetListIntersectionManager.deleteById(intersection.get().getId());
+        userBudgetListIntersectionService.deleteById(intersection.get().getId());
         return ResponseEntity.ok(0);
     }
 
@@ -314,7 +317,7 @@ public class BudgetListServiceImpl implements BudgetListService {
         if (!user.isPresent()) {
             return false;
         }
-        return userBudgetListIntersectionManager.findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList)
+        return userBudgetListIntersectionService.findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList)
                 .isPresent() || user.get().getRoles().equals("ROLE_ADMIN");
     }
 
@@ -341,7 +344,7 @@ public class BudgetListServiceImpl implements BudgetListService {
                         Collections.singletonList(USER_NOT_FOUND_ERROR_MESSAGE.getMessage()));
                 return new ResponseEntity(controllerError, HttpStatus.BAD_REQUEST);
             }
-            Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionManager.
+            Optional<UserBudgetListIntersection> intersection = userBudgetListIntersectionService.
                     findByIntersectionUserAndIntersectionBudgetList(user.get(), budgetList.get());
             if (!intersection.isPresent()) {
                 ControllerError controllerError = new ControllerError(HttpStatus.BAD_REQUEST,
@@ -353,7 +356,7 @@ public class BudgetListServiceImpl implements BudgetListService {
         }
 
         for (UserBudgetListIntersection intersection : intersections) {
-            userBudgetListIntersectionManager.deleteById(intersection.getId());
+            userBudgetListIntersectionService.deleteById(intersection.getId());
         }
 
         return ResponseEntity.ok(null);
