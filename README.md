@@ -37,7 +37,7 @@ Each controller handles part of app:
   * /api/expenses/getmonthstatistics - fetches statistics for selected date (year and month). Statistics compose of expenses in selected currency from selected month
   
 
-- FriendshipController handle all actions related to friendships between app users
+- FriendshipController handles all actions related to friendships between app users
   * /api/users/friendship/getallfriends - fetches all friends of given user
   * /api/users/friendship/findFriendship - tries to find friendship between logged user and given user
   * /api/users/friendship/add - adds new friendship between two users
