@@ -6,7 +6,7 @@ link to front end part can be found here: https://github.com/mlipinski97/budget_
 
 Each controller handles part of app:
 
-- UserController handles budget list related actions
+- UserController handles users related actions
   * /api/users/getall - retrieves list of all app users 
   * /api/users/getbyusername - fetches single user by given username
   * /api/users/getallbybudgetlistid - retrieves all users signed to given budget list
